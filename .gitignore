@@ -6,6 +6,8 @@ teste.py
 venv
 .env
 env
+*__pycache__*
+*/__pycache__/*
 
 ###### Ignoring Files ######
 *.ini
@@ -14,6 +16,11 @@ env
 
 ###### Ignoring Folders ######
 alembic/
+.venv/
+venv/
+.env/
+env/
+
 # This means that all the files in this folder will be ignored.
 
 
