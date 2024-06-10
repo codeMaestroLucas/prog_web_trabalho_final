@@ -8,6 +8,7 @@ venv
 env
 *__pycache__*
 */__pycache__/*
+*.db
 
 ###### Ignoring Files ######
 *.ini
@@ -64,5 +65,3 @@ lucas*
 *.exe
 *.out
 *.app
-
-# End of https://www.toptal.com/developers/gitignore/api/c++
