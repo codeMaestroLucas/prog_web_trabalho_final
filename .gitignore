@@ -1,0 +1,67 @@
+###### Ignoring File ######
+teste.py
+
+# Ignore only this file
+.venv
+venv
+.env
+env
+*_pycache_*
+*/_pycache_/*
+*.db
+
+###### Ignoring Files ######
+*.ini
+# This means that all the files ended with ".ini" will be ignored.
+
+
+###### Ignoring Folders ######
+alembic/
+.venv/
+venv/
+.env/
+env/
+
+# This means that all the files in this folder will be ignored.
+
+
+###### Expressions ######
+
+lucas*
+# All the files starting with "lucas" will be ignored
+
+
+###### REGEX ###### -> This site will create a REGEX Expression
+# Common expression
+# Created by https://www.toptal.com/developers/gitignore/api/c++
+# Edit at https://www.toptal.com/developers/gitignore?templates=c++
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app

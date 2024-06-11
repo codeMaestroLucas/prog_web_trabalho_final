@@ -18,7 +18,9 @@ def add_routes(app: FastAPI):
     Returns:
         Retorna o app com as rotas adicionadas.
     """
-    routes: Tuple[APIRouter] = (rt_products.router, rt_users.router, rt_orders.router)
+    routes: Tuple[APIRouter] = (rt_products.router,
+                                rt_users.router,
+                                rt_orders.router)
 
     for route in routes:
         app.include_router(route)
