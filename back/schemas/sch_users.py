@@ -47,7 +47,7 @@ class User(BaseModel):
         Returns:
             str: Retorna o email validado e tratado.
         """
-        email_regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+        email_regex = re.compile(r'^[a-zA-Z0-9_.+-] + @ [a-zA-Z0-9-] + \. [a-zA-Z0-9-.] + $')
         
         """
         - Começam (^) com um ou mais caracteres alfanuméricos (letras maiúsculas
@@ -67,7 +67,7 @@ class User(BaseModel):
         """
         
         if not email_regex.match(email):
-            raise ValueError('Invalid email address')
+            raise ValueError('Endereço de email inválido.')
         
         return email.strip()
     

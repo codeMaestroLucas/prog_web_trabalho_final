@@ -29,8 +29,8 @@ def create_order(order: sch_orders.Order,
     
     return db_order
 
-@router.get("/orders/{order_id}", response_model= sch_orders.Order)
-def get_order(order_id: int, db: Session = Depends(database.get_db)) -> mod_orders.Order:
+@router.get("/orders/{order_id}")
+def get_order(order_id: int, db: Session = Depends(database.get_db)):
     """Função usada para retornar pedidos que já foram criados.
 
     Args:
@@ -44,13 +44,28 @@ def get_order(order_id: int, db: Session = Depends(database.get_db)) -> mod_orde
     Returns:
         mod_orders.Order: pedido correspondente ao id solicitado.
     """
-    db_order = (db.query(mod_orders.Order)
-            .join(mod_users.User, mod_orders.Order.user_id == mod_users.User.id)
-            .join(mod_products.Product, mod_orders.Order.product_id == mod_products.Product.id)
-            .filter(mod_orders.Order.id == order_id)
-            .first())
+    
+    db_order = db.query(mod_orders.Order.id, mod_users.User.name,
+                         mod_products.Product.name, mod_products.Product.price,
+                         mod_products.Product.quantity)\
+                .join(mod_users.User,
+                      mod_orders.Order.user_id == mod_users.User.id)\
+                .join(mod_products.Product,
+                      mod_orders.Order.id == mod_products.Product.id)
+                
     
     if not db_order:
         raise HTTPException(status_code= 404, detail= "Pedido não encontrado.")
-        
-    return db_order
+    
+    results = db.execute(db_order)
+
+    # Obter os nomes das colunas
+    column_names = results._metadata.keys
+
+    # Converter os resultados para um formato JSON
+    resultados_json = [
+        dict(zip(column_names, row))
+        for row in results.fetchall()
+    ]
+
+    return resultados_json
