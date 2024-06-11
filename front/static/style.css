@@ -1,0 +1,82 @@
+body {
+    height: 100vh;
+
+    background-color: var(--bg-color);
+
+    color: var(--txt-std-color);
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    height: 100vh;
+    width: 60%;
+}
+
+.title {
+
+    font-size: 3.5rem;
+}
+
+.title .span-contrast-red {
+    font-size: 4.5rem;
+}
+
+.span-contrast-red {
+    color: var(--txt-contrast-red);
+}
+
+.sub-title{
+    font-size: 2rem;
+    text-align: center;
+}
+
+.card {
+    background-color: var(--card-bg-color);
+    height: 75%;
+    width: 40%;
+    margin: 10px;
+    padding: 15px 20px 5px;
+
+    border-radius: 10px;
+
+    box-shadow: 2px 5px 10px 2px rgba(0, 0, 0, 0.601);
+}
+.card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+
+    margin-top: 30px;
+}
+
+.card-content > * {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.card-content .input {
+    width: 50%;
+    height: 25px;
+
+    font-size: 13px;
+
+    padding: 5px;
+    padding-left: 15px;
+    margin: 7px;
+    
+    border-radius: 9px;
+}
+
+.card-content .input:focus {
+    outline: 1.5px solid var(--blue-contrast);
+}
+
+.card-content .create_account {
+    color: var(--txt-contrast-blue);
+}
