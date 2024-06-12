@@ -1,8 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+BASE_DIR = os.getcwd()
+DB_PATH = os.path.join(BASE_DIR, "test.db")
+SQLALCHEMY_DATABASE_URL = "sqlite:///" + DB_PATH
+
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

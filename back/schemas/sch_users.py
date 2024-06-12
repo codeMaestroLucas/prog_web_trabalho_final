@@ -49,19 +49,22 @@ class User(BaseModel):
         """
         email_regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
         
-        # - Começam (^) com um ou mais caracteres alfanuméricos (letras maiúsculas ou
-        # minúsculas e dígitos), incluindo sublinhados, pontos, sinais de mais ou hífens.
-        #
-        # - Seguem (+) com um caractere @.
-        #
-        # - Continuam (+) com um ou mais caracteres alfanuméricos ou hífens, que
-        # representam o domínio.
-        #
-        # - Têm um ponto literal.
-        # OBS: A "\" somente para o compilador entender que é um ponto literal.
-        #
-        # - Terminam ($) com um ou mais caracteres alfanuméricos, pontos ou hífens,
-        # que representam a parte do domínio de topo (como .com, .org, etc.).
+        """
+        - Começam (^) com um ou mais caracteres alfanuméricos (letras maiúsculas
+        ou minúsculas e dígitos), incluindo sublinhados, pontos, sinais de mais
+        ou hífens.
+        
+        - Seguem (+) com um caractere @.
+        
+        - Continuam (+) com um ou mais caracteres alfanuméricos ou hífens, que
+        representam o domínio.
+        
+        - Têm um ponto literal.
+        OBS: A "\" somente para o compilador entender que é um ponto literal.
+        
+        - Terminam ($) com um ou mais caracteres alfanuméricos, pontos ou hífens,
+        que representam a parte do domínio de topo (como .com, .org, etc.).
+        """
         
         if not email_regex.match(email):
             raise ValueError('Invalid email address')
