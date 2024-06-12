@@ -8,15 +8,12 @@ DB_PATH = os.path.join(BASE_DIR, "test.db")
 SQLALCHEMY_DATABASE_URL = "sqlite:///" + DB_PATH
 
 
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    connect_args= {"check_same_thread": False}
+    connect_args={"check_same_thread": False}
     )
 
-SessionLocal = sessionmaker(autocommit= False, autoflush= False, bind= engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 def get_db():

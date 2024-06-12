@@ -22,9 +22,10 @@ def add_routes(app: FastAPI):
         
     return app
         
+
 def main() -> None:
     """Função usada para rodar o código principal."""
-
+    
     Base.metadata.create_all(bind= engine)
 
     app = FastAPI()

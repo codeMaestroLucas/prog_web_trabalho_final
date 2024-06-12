@@ -67,11 +67,7 @@ class User(BaseModel):
         """
         
         if not email_regex.match(email):
-<<<<<<< HEAD
             raise ValueError('Invalid email address')
-=======
-            raise ValueError('Endereço de email inválido.')
->>>>>>> 08678f095d92dbbf56a6a0fd5e325b37d0f88342
         
         return email.strip()
     

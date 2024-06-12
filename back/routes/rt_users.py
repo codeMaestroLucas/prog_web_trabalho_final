@@ -6,7 +6,6 @@ from schemas import sch_users
 
 router = APIRouter()
 
-
 @router.post("/users/", response_model= sch_users.User)
 def create_user(user: sch_users.User,
                 db: Session= Depends(database.get_db)) -> mod_users.User:
