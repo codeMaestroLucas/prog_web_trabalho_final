@@ -5,10 +5,6 @@ from database import engine, Base
 import uvicorn
 
 
-Base.metadata.create_all(bind= engine)
-
-app = FastAPI()
-
 def add_routes(app: FastAPI):
     """Função usada para adicionar as rotas inseridas na tupla "routes".
 
@@ -27,6 +23,16 @@ def add_routes(app: FastAPI):
         
     return app
         
+def main() -> None:
+    """Função usada para rodar o código principal."""
 
-add_routes(app)
-uvicorn.run(app)
+    Base.metadata.create_all(bind= engine)
+
+    app = FastAPI()
+
+    add_routes(app)
+    uvicorn.run(app)
+
+
+if __name__ == '__main__':
+    main()

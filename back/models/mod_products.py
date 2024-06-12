@@ -1,5 +1,7 @@
 from database import Base
 from sqlalchemy import Column, String, Integer, Float
+from sqlalchemy.orm import relationship
+from mod_orders import order_products
 
 class Product(Base):
     """Classe de Produtos
@@ -12,3 +14,5 @@ class Product(Base):
     name = Column(String)
     price = Column(Float)
     quantity = Column(Integer)
+
+    orders = relationship('Order', secondary= order_products, back_populates= 'products')
