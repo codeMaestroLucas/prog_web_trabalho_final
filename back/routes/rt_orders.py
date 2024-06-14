@@ -1,56 +1,277 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
-from models import mod_users, mod_products, mod_orders
-from schemas import sch_orders
-import database
+from sqlalchemy.exc import IntegrityError
+from models.mod_orders import Order as modOrder
+from models.mod_products import Product as modProduct
+from models.mod_users import User as modUser
+from schemas.sch_orders import Order as schOrder
+from database import get_db
 
 router = APIRouter()
 
-@router.post("/orders/", response_model= sch_orders.Order)
-def create_order(order: sch_orders.Order,
-                 db: Session = Depends(database.get_db)) -> mod_orders.Order:
-    """
-    Função usada para se criar um novo pedido.
+
+def check_if_order_exists(order: modOrder,
+                    db: Session = Depends(get_db),
+                    invert: bool = False) -> None:
+    """Função usada para verificar se um pedido existe ou não no DB.
 
     Args:
-        order (sch_orders.Order): Pedido que será criado.
-        db (Session, optional): Sessão de banco de dados usada para enviar os
-        dados. Defaults to Depends(database.get_db).
+        order (modOrder): Pedido que será verificado a sua existência ou
+        não no DB.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+        invert (Bool): Modifica o funcionamento da função, sendo usado para
+        saber se a resposta deve ser positiva ou negativa da consulta. O padrão
+        é 'False' que verifica se o pedido JÁ EXISTE. Já quando está para
+        'TRUE' verifica se o pedido NÃO EXISTE.
+
+    Raises:
+        HTTPException: Caso o pedido já exista.
+        
+    Exception:
+        Except (AttributeError): Esse except acontece quando o resultado da
+        query é NoneType.
+    """
+    try:
+        exists_order = db.query(modOrder).filter(
+            modOrder.user_id == order.user_id,
+            modOrder.product_id == order.product_id
+        ).first()
+
+
+        if invert:
+            if exists_order:
+                raise HTTPException(status_code= 400,
+                                    detail= "Pedido já existe.")
+        
+        else:
+            if not exists_order:
+                raise HTTPException(status_code= 400,
+                                    detail= "Pedido não existe.")
+
+    except AttributeError:
+        raise HTTPException(status_code= 400,
+                            detail= "Pedido não existe.")
+    
+    
+def check_if_user_exists(order: modOrder,
+                         db: Session = Depends(get_db)) -> None:
+    """Função usada para verificar se o usuário existe ou não na tabela de
+    usuários
+
+    Args:
+        order (modOrder): Novo pedido.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: Caso o usuário não exista.
+    """
+    stmt = select(modUser).where(modUser.id == order.user_id)
+    db_user = db.execute(stmt).first()
+
+    if not db_user:
+        raise HTTPException(status_code= 400,
+                            detail= "Usuário não existe.")
+
+
+def check_if_product_exists(order: modOrder,
+                            db: Session = Depends(get_db)) -> None:
+    """Função usada para verificar se o produto existe ou não na tabela de
+    produtos
+
+    Args:
+        order (modOrder): Novo pedido.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: Caso o produto não exista.
+    """
+    stmt = select(modProduct).where(modProduct.id == order.product_id)
+    db_product = db.execute(stmt).first()
+    
+    if not db_product:
+        raise HTTPException(status_code= 400,
+                            detail= "Produto não existe.")
+
+
+def check_if_exists(old_order: modOrder,
+                    new_order: modOrder,
+                    db: Session = Depends(get_db)):
+    """Função usada para verficar a existencia do pedido a ser alterado, o novo
+    usuário e produto que serão adicionados na alteração.
+    
+    Essa função ficará responsável por chamar todas as verificações individuais.
+
+    Args:
+        old_order (modOrder): Pedido que receberá a alteração.
+        new_order (modOrder): Novos campos de pedido.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+    
+    Raises:
+        HTTPException: Caso os o pedido com os campos alterados coincidam com
+        outro já registrado na tabela ORDERS.
+    """
+    check_if_order_exists(old_order, db)
+    check_if_user_exists(new_order, db)
+    check_if_product_exists(new_order, db)
+    
+    stmt = select(modOrder).\
+        where(modOrder.user_id == new_order.user_id,
+              modOrder.product_id == new_order.product_id)
+    print(stmt)
+    db_order = db.execute(stmt).scalars().first()
+    
+    if db_order:
+        raise HTTPException(status_code= 400,
+                            detail= "Pedido já existe.")
+
+
+def return_order_formated(order: modOrder,
+                          db: Session = Depends(get_db)) -> dict:
+    """Função usada para formatar a saída da função 'GET_ORDER' mostrando os
+    campos de 'id_order, 'user_name, 'product_name, 'product_price' e
+    'product_quantity'
+
+    Args:
+        order (modOrder): Pedido.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        mod_orders.Order: O pedido criado.
+        dict: Dicionário que contém os campos selecionados.
     """
-    db_order = mod_orders.Order(user_id= order.user_id,
-                                product_id= order.product_id)
+    stmt = select(modOrder.id,
+                  modUser.name,
+                  modProduct.name, modProduct.price, modProduct.quantity).\
+            join(modUser).join(modProduct).\
+            where(modOrder.id == order.id)
     
+    _order = db.execute(stmt).first()
+
+    order_data: dict = {}
+    order_data['id'] = _order[0]
+    order_data['user_name'] = _order[1]
+    order_data['product_name'] = _order[2]
+    order_data['product_price'] = _order[3]
+    order_data['product_quantity'] = _order[4]
+
+    return order_data
+
+
+@router.post("/orders/", response_model= schOrder)
+def create_order(order: schOrder,
+                db: Session = Depends(get_db)) -> modOrder:
+    """Função usada para criar um novo pedido.
+
+    Args:
+        order (schOrder): Pedido que será criado.
+        db (Session, optional): Sessão de banco de dados usada para enviar os
+        dados. Defaults to Depends(get_db).
+
+    Returns:
+        modOrder: O pedido criado.
+    """
+    db_order = modOrder(
+                        user_id= order.user_id,
+                        product_id= order.product_id
+                        )
+    
+    check_if_order_exists(db_order, db, invert= True)
+
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
-    
+
     return db_order
 
-@router.get("/orders/{order_id}", response_model= sch_orders.Order)
-def get_order(order_id: int, db: Session = Depends(database.get_db)) -> mod_orders.Order:
-    """Função usada para retornar pedidos que já foram criados.
+
+@router.get("/orders/{order_id}")
+def read_order(order_id: int,
+             db: Session = Depends(get_db)):
+    """Função que retorna um pedido criado baseado no ID.
 
     Args:
-        order_id (int): id do pedido.
+        order_id (int): ID do pedido.
         db (Session, optional): Sessão de banco de dados que será usada para
-        enviar os dados. Defaults to Depends(database.get_db).
+        enviar os dados. Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: caso não haja um id correspondente ao que foi solicitado.
+        HTTPException: caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
-        mod_orders.Order: pedido correspondente ao id solicitado.
+        modOrder: pedido correspondente ao ID solicitado.
     """
-    db_order = (db.query(mod_orders.Order)
-            .join(mod_users.User, mod_orders.Order.user_id == mod_users.User.id)
-            .join(mod_products.Product, mod_orders.Order.product_id == mod_products.Product.id)
-            .filter(mod_orders.Order.id == order_id)
-            .first())
+    db_query = select(modOrder).where(modOrder.id == order_id)
+    order_to_get = db.execute(db_query).scalars().first()
+
+    check_if_order_exists(order_to_get, db)
     
-    if not db_order:
-        raise HTTPException(status_code= 404, detail= "Pedido não encontrado.")
+    order_to_get = return_order_formated(order_to_get, db)
+    
+    return order_to_get
+
+
+@router.put('/orders/{order_id}', response_model= schOrder)
+def update_order(order_id: int,
+                order: schOrder,
+                db: Session = Depends(get_db)) -> modOrder:
+    """Função usada para atualizar um pedido basedo no ID.
+
+    Args:
+        order_id (int): ID do pedido que será atualizado.
+        order (schOrder): Novos campos de pedido que serão usados.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+
+    Returns:
+        modOrder: Pedido atualizado.
+    """
+    
+    db_query = select(modOrder).where(modOrder.id == order_id)
+    old_order = db.execute(db_query).scalars().first()
+    
+    check_if_exists(old_order, order, db)
+    
+    stmt = update(modOrder).where(modOrder.id == order_id).values(
+        user_id= order.user_id,
+        product_id= order.product_id
+    )
+
+    try:
+        db.execute(stmt)
+        db.commit()
+
+        updated_order = db.query(modOrder).filter(modOrder.id == order_id).first()
+        return updated_order
+
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code= 400, detail= "Erro ao atualizar o pedido.")
+
+
+@router.delete('/order/{order_id}', response_model= None)
+def delete_order(order_id: int,
+                db: Session = Depends(get_db)) -> str:
+    """Função usada para deletar um pedido baseado no ID.
+
+    Args:
+        order_id (int): ID do pedido
+        db (Session, optional): Conexão com DB. Defaults to Depends(get_db).
+
+    Returns:
+        str: Mensagem de retorno.
+    """
+    db_query = select(modOrder).where(modOrder.id == order_id)
+    order_to_delete = db.execute(db_query).scalars().first()
+    
+    check_if_order_exists(order_to_delete, db)
+    
+    stmt = delete(modOrder).where(modOrder.id == order_id)
+
+    try:
+        db.execute(stmt)
+        db.commit()
         
-    return db_order
+        return {'msg' : 'Pedido deletado.'}
+    
+    except:
+        db.rollback()
+        return {'msg' : 'Falha ao deletar o pedido.'}

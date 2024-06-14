@@ -11,8 +11,7 @@ router = APIRouter()
 def check_if_exists(user: modUser,
                     db: Session = Depends(get_db),
                     invert: bool = False) -> None:
-    """Função usada para verificar se um usuário existe ou não no DB. Se o
-    usuário não existir o retorno será None.
+    """Função usada para verificar se um usuário existe ou não no DB.
 
     Args:
         user (modUser): Usuário que será verificado a sua existência ou
@@ -50,8 +49,8 @@ def check_if_exists(user: modUser,
 
 @router.post("/users/", response_model= schUser)
 def create_user(user: schUser,
-                db: Session= Depends(get_db)) -> modUser:
-    """Função usada para criar um novo pedido.
+                db: Session = Depends(get_db)) -> modUser:
+    """Função usada para criar um novo usuário.
 
     Args:
         user (schUser): Usuário que será criado.
@@ -83,7 +82,7 @@ def create_user(user: schUser,
 
 @router.get("/users/{user_id}", response_model= schUser)
 def read_user(user_id: int,
-             db: Session= Depends(get_db)) -> modUser:
+             db: Session = Depends(get_db)) -> modUser:
     """Função que retorna um usuário criado baseado no ID.
 
     Args:
@@ -108,7 +107,7 @@ def read_user(user_id: int,
 @router.put('/users/{user_id}', response_model= schUser)
 def update_user(user_id: int,
                 user: schUser,
-                db: Session= Depends(get_db)) -> modUser:
+                db: Session = Depends(get_db)) -> modUser:
     """Função usada para atualizar um usuário basedo no ID.
 
     Args:
@@ -148,7 +147,7 @@ def update_user(user_id: int,
 
 @router.delete('/user/{user_id}', response_model= None)
 def delete_user(user_id: int,
-                db: Session= Depends(get_db)) -> str:
+                db: Session = Depends(get_db)) -> str:
     """Função usada para deletar um usuário baseado no ID.
 
     Args:
