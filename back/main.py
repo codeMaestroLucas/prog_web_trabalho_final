@@ -1,8 +1,8 @@
 from typing import Tuple
 from fastapi import FastAPI, APIRouter
 from routes import rt_products, rt_users, rt_orders
-from database import engine, Base
-import uvicorn
+from database import Base, engine
+from uvicorn import run
 
 def add_routes(app: FastAPI):
     """Função usada para adicionar as rotas inseridas na tupla "routes".
@@ -13,8 +13,9 @@ def add_routes(app: FastAPI):
     Returns:
         Retorna o app com as rotas adicionadas.
     """
-    routes: Tuple[APIRouter] = (rt_products.router,
+    routes: Tuple[APIRouter] = (
                                 rt_users.router,
+                                rt_products.router,
                                 rt_orders.router)
 
     for route in routes:
@@ -31,7 +32,7 @@ def main() -> None:
     app = FastAPI()
 
     add_routes(app)
-    uvicorn.run(app)
+    run(app)
 
 
 if __name__ == '__main__':

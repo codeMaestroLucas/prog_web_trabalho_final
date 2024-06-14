@@ -17,6 +17,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 def get_db():
+    """Função usada para criar uma conexão e entragá-la para que receba os
+    valores necessários. Após as operações serem realizadas a conexão será
+    encerrada.
+
+    Yields:
+        Session: Conexão com o DB.
+    """
     db = SessionLocal()
     try:
         yield db
