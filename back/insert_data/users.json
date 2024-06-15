@@ -1,0 +1,25 @@
+[
+    {
+        "name": "Lucas Samuel",
+        "email": "lucas@email.com",
+        "password": "Luca$1234"
+    },
+
+    {
+        "name": "Pedro Augusto",
+        "email": "pedro@email.com",
+        "password": "pedR!@567"
+    },
+
+    {
+        "name": "Jane Due",
+        "email": "jane@email.com",
+        "password": "112R%¨$d"
+    },
+
+    {
+        "name": "Jhon Due",
+        "email": "jhon@email.com",
+        "password": "688FHr#hk"
+    }
+]

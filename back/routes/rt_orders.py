@@ -57,7 +57,7 @@ def check_if_order_exists(order: modOrder,
 def check_if_user_exists(order: modOrder,
                          db: Session = Depends(get_db)) -> None:
     """Função usada para verificar se o usuário existe ou não na tabela de
-    usuários
+    usuários.
 
     Args:
         order (modOrder): Novo pedido.
@@ -77,7 +77,7 @@ def check_if_user_exists(order: modOrder,
 def check_if_product_exists(order: modOrder,
                             db: Session = Depends(get_db)) -> None:
     """Função usada para verificar se o produto existe ou não na tabela de
-    produtos
+    produtos.
 
     Args:
         order (modOrder): Novo pedido.
@@ -97,8 +97,8 @@ def check_if_product_exists(order: modOrder,
 def check_if_exists(old_order: modOrder,
                     new_order: modOrder,
                     db: Session = Depends(get_db)):
-    """Função usada para verficar a existencia do pedido a ser alterado, o novo
-    usuário e produto que serão adicionados na alteração.
+    """Função usada para verficar a existencia do pedido, levando em conta a
+    existência dos usuários e produtos nas suas respectivas tabelas.
     
     Essa função ficará responsável por chamar todas as verificações individuais.
 
@@ -115,10 +115,9 @@ def check_if_exists(old_order: modOrder,
     check_if_user_exists(new_order, db)
     check_if_product_exists(new_order, db)
     
-    stmt = select(modOrder).\
-        where(modOrder.user_id == new_order.user_id,
-              modOrder.product_id == new_order.product_id)
-    print(stmt)
+    stmt = select(modOrder).where(
+        modOrder.user_id == new_order.user_id,
+        modOrder.product_id == new_order.product_id)
     db_order = db.execute(stmt).scalars().first()
     
     if db_order:
@@ -130,7 +129,7 @@ def return_order_formated(order: modOrder,
                           db: Session = Depends(get_db)) -> dict:
     """Função usada para formatar a saída da função 'GET_ORDER' mostrando os
     campos de 'id_order, 'user_name, 'product_name, 'product_price' e
-    'product_quantity'
+    'product_quantity'.
 
     Args:
         order (modOrder): Pedido.
@@ -205,9 +204,7 @@ def read_order(order_id: int,
 
     check_if_order_exists(order_to_get, db)
     
-    order_to_get = return_order_formated(order_to_get, db)
-    
-    return order_to_get
+    return return_order_formated(order_to_get, db)
 
 
 @router.put('/orders/{order_id}', response_model= schOrder)
@@ -253,7 +250,7 @@ def delete_order(order_id: int,
     """Função usada para deletar um pedido baseado no ID.
 
     Args:
-        order_id (int): ID do pedido
+        order_id (int): ID do pedido.
         db (Session, optional): Conexão com DB. Defaults to Depends(get_db).
 
     Returns:
