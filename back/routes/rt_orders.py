@@ -35,7 +35,8 @@ def check_if_order_exists(order: modOrder,
     try:
         exists_order = db.query(modOrder).filter(
             modOrder.user_id == order.user_id,
-            modOrder.product_id == order.product_id
+            modOrder.product_id == order.product_id,
+            modOrder.quantity == order.quantity
         ).first()
 
 
@@ -120,9 +121,9 @@ def check_if_exists(old_order: modOrder,
         modOrder.product_id == new_order.product_id)
     db_order = db.execute(stmt).scalars().first()
     
-    if db_order:
-        raise HTTPException(status_code= 400,
-                            detail= "Pedido já existe.")
+    # if db_order:
+    #     raise HTTPException(status_code= 400,
+    #                         detail= "Pedido já existe.")
 
 
 def return_order_formated(order: modOrder,
@@ -140,7 +141,8 @@ def return_order_formated(order: modOrder,
     """
     stmt = select(modOrder.id,
                   modUser.name,
-                  modProduct.name, modProduct.price, modProduct.quantity).\
+                  modProduct.name,
+                  modOrder.quantity, modOrder.total_value).\
             join(modUser).join(modProduct).\
             where(modOrder.id == order.id)
     
@@ -150,10 +152,84 @@ def return_order_formated(order: modOrder,
     order_data['id'] = _order[0]
     order_data['user_name'] = _order[1]
     order_data['product_name'] = _order[2]
-    order_data['product_price'] = _order[3]
-    order_data['product_quantity'] = _order[4]
+    order_data['product_quantity'] = f'{_order[3]}x'
+    order_data['total_value'] = f'${_order[4]:.2f}'
 
     return order_data
+
+
+
+def verify_quantity(order: modOrder,
+                    quantity: int, db: Session = Depends(get_db)) -> int:
+    """Função usada para verificar a quantidade em estoque e atualizá-la
+    conforme o necessário.
+
+    Args:
+        order (modOrder): Pedido.
+        quantity (int): Quantidade.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: Caso o produto não tenha sido encontrado.
+        HTTPException: Caso não haja nenhum produto em estoque.
+        HTTPException: Caso a quantidade seja maior do que o valor em estoque.
+
+    Returns:
+        int: A quantidade.
+    """
+    stmt = select(modProduct.in_stock).where(modProduct.id == order.product_id)
+    result = db.execute(stmt).first()
+
+    if not result:
+        raise HTTPException(status_code= 404, detail= "Produto não encontrado.")
+
+    in_stock = result[0]
+
+    if in_stock == 0:
+        raise HTTPException(status_code= 404, detail= "Adicione mais produtos no \
+estoque para poder continuar.")
+
+    if in_stock - quantity < 0:
+        raise HTTPException(status_code= 404, detail= f"Quantidade indisponível \
+para retirada. Temos apenas {in_stock} desse produto em estoque.")
+    
+    
+    update_stmt = (
+        update(modProduct)
+        .where(modProduct.id == order.product_id)
+        .values(in_stock= in_stock - quantity)
+    )
+    db.execute(update_stmt)
+    db.commit()
+    
+    return quantity
+
+
+def calculate_total_value(order: schOrder,
+                          db: Session = Depends(get_db)) -> float:
+    """Função usada para calcular o valor total do pedido.
+
+    Args:
+        order (modOrder): Pedido.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: Caso o pedido não seja enconrtado.
+
+    Returns:
+        float: Valor total do pedido.
+    """
+    stmt = select(modProduct.price).where(modProduct.id == order.product_id)
+    db_order = db.execute(stmt).first()
+
+    if db_order:
+        price = db_order[0]
+        price, order.quantity
+        return round(price * order.quantity, 2)
+
+    else:
+        db.rollback()
+        raise HTTPException(status_code= 404, detail= "Pedido não encontrado ou inválido.")
 
 
 @router.post("/orders/", response_model= schOrder)
@@ -171,10 +247,14 @@ def create_order(order: schOrder,
     """
     db_order = modOrder(
                         user_id= order.user_id,
-                        product_id= order.product_id
+                        product_id= order.product_id,
+                        quantity= verify_quantity(order, order.quantity, db),
+                        total_value= calculate_total_value(order, db)
                         )
     
     check_if_order_exists(db_order, db, invert= True)
+    check_if_user_exists(db_order, db)
+    check_if_product_exists(db_order, db)
 
     db.add(db_order)
     db.commit()
@@ -221,15 +301,19 @@ def update_order(order_id: int,
     Returns:
         modOrder: Pedido atualizado.
     """
-    
     db_query = select(modOrder).where(modOrder.id == order_id)
     old_order = db.execute(db_query).scalars().first()
     
     check_if_exists(old_order, order, db)
     
+    to_remove = order.quantity - old_order.quantity
+    verify_quantity(old_order, to_remove, db)
+    
     stmt = update(modOrder).where(modOrder.id == order_id).values(
         user_id= order.user_id,
-        product_id= order.product_id
+        product_id= order.product_id,
+        quantity= order.quantity,
+        total_value= calculate_total_value(order, db)
     )
 
     try:
@@ -244,7 +328,7 @@ def update_order(order_id: int,
         raise HTTPException(status_code= 400, detail= "Erro ao atualizar o pedido.")
 
 
-@router.delete('/order/{order_id}', response_model= None)
+@router.delete('/order/{order_id}')
 def delete_order(order_id: int,
                 db: Session = Depends(get_db)) -> str:
     """Função usada para deletar um pedido baseado no ID.
@@ -267,8 +351,8 @@ def delete_order(order_id: int,
         db.execute(stmt)
         db.commit()
         
-        return {'msg' : 'Pedido deletado.'}
+        return 'Pedido deletado.'
     
     except:
         db.rollback()
-        return {'msg' : 'Falha ao deletar o pedido.'}
+        return 'Falha ao deletar o pedido.'

@@ -62,7 +62,7 @@ def create_product(product: schProduct,
     db_product = modProduct(
                             name= product.name,
                             price= product.price,
-                            quantity=  product.quantity
+                            in_stock=  product.in_stock
                             )
     
     check_if_exists(db_product, db, invert= True)
@@ -124,7 +124,7 @@ def update_product(product_id: int,
     stmt = update(modProduct).where(modProduct.id == product_id).values(
         name= product.name,
         price= product.price,
-        quantity=  product.quantity
+        in_stock=  product.in_stock
     )
 
     db.execute(stmt)
@@ -134,7 +134,7 @@ def update_product(product_id: int,
     return updated_product
 
 
-@router.delete('/product/{product_id}', response_model= None)
+@router.delete('/product/{product_id}')
 def delete_product(product_id: int,
                 db: Session = Depends(get_db)) -> str:
     """Função usada para deletar um produto baseado no ID.
@@ -157,8 +157,8 @@ def delete_product(product_id: int,
         db.execute(stmt)
         db.commit()
         
-        return {'msg' : 'Produto deletado.'}
+        return 'Produto deletado.'
     
     except:
         db.rollback()
-        return {'msg' : 'Falha ao deletar o produto.'}
+        return 'Falha ao deletar o produto.'

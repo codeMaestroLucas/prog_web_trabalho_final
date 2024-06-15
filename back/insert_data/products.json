@@ -1,0 +1,25 @@
+[
+    {
+        "name": " pizza de calabresa",
+        "price": 40.6,
+        "in_stock": 70
+      },
+
+      {
+        "name": " pizza portuguesa",
+        "price": 35.0,
+        "in_stock": 53
+      },
+
+      {
+        "name": " coquinha 2L",
+        "price": 10,
+        "in_stock": 1000
+      },
+
+      {
+        "name": " coquinha 1L",
+        "price": 6.5,
+        "in_stock": 50
+      }
+]

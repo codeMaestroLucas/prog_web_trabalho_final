@@ -9,7 +9,10 @@ class Product(BaseModel):
     # id: int
     name: str  = Field(..., min_length=1, max_length=100)
     price: float
-    quantity: int
+    in_stock: int
+    
+    class Config:
+        from_attributes  = True
     
     @field_validator('name')
     def validate_name(cls, name: str) -> str:
@@ -57,30 +60,27 @@ class Product(BaseModel):
         
         return round(price, 2)
     
-    @field_validator('quantity')
-    def validade_quantity(cls, quantity: int) -> int:
-        """Função usada para fazer a validação do valor do campo "quantity"
+    @field_validator('in_stock')
+    def validade_in_stock(cls, in_stock: int) -> int:
+        """Função usada para fazer a validação do valor do campo "in_stock"
         fornecido pelo usuário.
 
         Args:
-            quantity (int): quantidade.
+            in_stock (int): produtos em estoque.
 
         Raises:
             
             1. ValueError: Quando o valor fornecido não for numérico;
             
-            2. ValueError: Quando o valor fornecido for menor ou igual a zero.
+            2. ValueError: Quando o valor fornecido for menor do que zero.
 
         Returns:
-            int: retorna o valor de quantidade validado.
+            int: retorna o valor de produtos em estoque validado.
         """
-        if not isinstance(quantity, int):
-            raise ValueError("O preço do produto deve ser um valor numérico inteiro.")
+        if not isinstance(in_stock, int):
+            raise ValueError("O nº produtos em estoque deve ser um valor numérico inteiro.")
         
-        if quantity <= 0:
-            raise ValueError("A quantidade do produto não pode ser menor ou igual a 0.")
+        if in_stock < 0:
+            raise ValueError("O nº produtos em estoque do produto não pode ser menor do que 0.")
         
-        return quantity
-    
-    class Config:
-        from_attributes  = True
+        return in_stock

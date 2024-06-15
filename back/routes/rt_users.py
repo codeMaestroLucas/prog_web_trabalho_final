@@ -145,7 +145,7 @@ def update_user(user_id: int,
         raise HTTPException(status_code= 400, detail= "Endereço de email já está em uso.")
 
 
-@router.delete('/user/{user_id}', response_model= None)
+@router.delete('/user/{user_id}')
 def delete_user(user_id: int,
                 db: Session = Depends(get_db)) -> str:
     """Função usada para deletar um usuário baseado no ID.

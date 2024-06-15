@@ -12,6 +12,9 @@ class User(BaseModel):
     email: str = Field(..., min_length=1, max_length=100)
     password: str = Field(..., min_length=1, max_length=100)
     
+    class Config:
+        from_attributes  = True
+    
     
     @field_validator('name')
     def validate_name(cls, name: str) -> str:
@@ -109,7 +112,3 @@ class User(BaseModel):
             raise ValueError('Senha deve ter pelo menos um caractere especial')
 
         return password
-    
-    
-    class Config:
-        from_attributes  = True
