@@ -7,6 +7,7 @@ from models.mod_products import Product as modProduct
 from models.mod_users import User as modUser
 from schemas.sch_orders import Order as schOrder
 from database import get_db
+from utils import check_if_exists, return_order_formated
 
 router = APIRouter()
 
@@ -121,41 +122,11 @@ def check_if_exists(old_order: modOrder,
         modOrder.product_id == new_order.product_id)
     db_order = db.execute(stmt).scalars().first()
     
-    # if db_order:
-    #     raise HTTPException(status_code= 400,
-    #                         detail= "Pedido já existe.")
+    if db_order:
+        raise HTTPException(status_code= 400,
+                            detail= "Pedido já existe.")
 
 
-def return_order_formated(order: modOrder,
-                          db: Session = Depends(get_db)) -> dict:
-    """Função usada para formatar a saída da função 'GET_ORDER' mostrando os
-    campos de 'id_order, 'user_name, 'product_name, 'product_price' e
-    'product_quantity'.
-
-    Args:
-        order (modOrder): Pedido.
-        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
-
-    Returns:
-        dict: Dicionário que contém os campos selecionados.
-    """
-    stmt = select(modOrder.id,
-                  modUser.name,
-                  modProduct.name,
-                  modOrder.quantity, modOrder.total_value).\
-            join(modUser).join(modProduct).\
-            where(modOrder.id == order.id)
-    
-    _order = db.execute(stmt).first()
-
-    order_data: dict = {}
-    order_data['id'] = _order[0]
-    order_data['user_name'] = _order[1]
-    order_data['product_name'] = _order[2]
-    order_data['product_quantity'] = f'{_order[3]}x'
-    order_data['total_value'] = f'${_order[4]:.2f}'
-
-    return order_data
 
 
 

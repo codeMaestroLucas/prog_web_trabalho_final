@@ -36,7 +36,6 @@ def add_routes(app: FastAPI):
     return app
 
 
-
 def main() -> None:
     """Função usada para rodar o código principal."""
     app = FastAPI(lifespan= lifespan)

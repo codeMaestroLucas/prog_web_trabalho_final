@@ -4,47 +4,9 @@ from sqlalchemy.orm import Session
 from models.mod_products import Product as modProduct
 from schemas.sch_products import Product as schProduct
 from database import get_db
+from utils import check_if_exists
 
 router = APIRouter()
-
-def check_if_exists(product: modProduct,
-                    db: Session = Depends(get_db),
-                    invert: bool = False) -> None:
-    """Função usada para verificar se um produto existe ou não no DB.
-    
-    Args:
-        product (modProduct): Produto que será verificado a sua existência ou
-        não no DB.
-        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
-        invert (Bool): Modifica o funcionamento da função, sendo usado para
-        saber se a resposta deve ser positiva ou negativa da consulta. O padrão
-        é 'False' que verifica se o produto JÁ EXISTE. Já quando está para
-        'TRUE' verifica se o produto NÃO EXISTE.
-
-    Raises:
-        HTTPException: Caso o produto já exista.
-        
-    Exception:
-        Except (AttributeError): Esse except acontece quando o resultado da
-        query é NoneType.
-    """
-    try:
-        exists = db.query(modProduct).filter(modProduct.name == product.name).first()
-
-        if invert:
-            if exists:
-                raise HTTPException(status_code= 400,
-                                    detail= "Produto já existe.")
-        
-        else:
-            if not exists:
-                raise HTTPException(status_code= 400,
-                                    detail= "Produto não existe.")
-
-    except AttributeError:
-        raise HTTPException(status_code= 400,
-                            detail= "Produto não existe.")
-        
 
 @router.post("/products/", response_model= schProduct)
 def create_product(product: schProduct,
@@ -65,7 +27,7 @@ def create_product(product: schProduct,
                             in_stock=  product.in_stock
                             )
     
-    check_if_exists(db_product, db, invert= True)
+    check_if_exists('products', db_product, db, invert= True)
 
     db.add(db_product)
     db.commit()
@@ -93,7 +55,7 @@ def read_product(product_id: int,
     db_query = select(modProduct).where(modProduct.id == product_id)
     product_to_get = db.execute(db_query).scalars().first()
 
-    check_if_exists(product_to_get, db)
+    check_if_exists('products', product_to_get, db)
     
     return product_to_get
 
@@ -119,7 +81,15 @@ def update_product(product_id: int,
     db_query = select(modProduct).where(modProduct.id == product_id)
     product_to_update = db.execute(db_query).scalars().first()
     
-    check_if_exists(product_to_update, db)
+    check_if_exists('products', product_to_update, db) # Old
+    
+    new_product = modProduct(
+                    name= product.name,
+                    price= product.price,
+                    in_stock=  product.in_stock
+                    )
+    
+    check_if_exists('products', new_product, db, invert= True) # New
     
     stmt = update(modProduct).where(modProduct.id == product_id).values(
         name= product.name,
@@ -130,13 +100,12 @@ def update_product(product_id: int,
     db.execute(stmt)
     db.commit()
 
-    updated_product = db.query(modProduct).filter(modProduct.id == product_id).first()
-    return updated_product
+    return new_product
 
 
 @router.delete('/product/{product_id}')
 def delete_product(product_id: int,
-                db: Session = Depends(get_db)) -> str:
+                db: Session = Depends(get_db)) -> dict:
     """Função usada para deletar um produto baseado no ID.
 
     Args:
@@ -149,7 +118,7 @@ def delete_product(product_id: int,
     db_query = select(modProduct).where(modProduct.id == product_id)
     product_to_delete = db.execute(db_query).scalars().first()
     
-    check_if_exists(product_to_delete, db)
+    check_if_exists('products', product_to_delete, db)
     
     stmt = delete(modProduct).where(modProduct.id == product_id)
 
@@ -157,8 +126,8 @@ def delete_product(product_id: int,
         db.execute(stmt)
         db.commit()
         
-        return 'Produto deletado.'
+        return {'msg' : 'Produto deletado.'}
     
     except:
         db.rollback()
-        return 'Falha ao deletar o produto.'
+        return {'msg' : 'Falha ao deletar o Produto.'}
