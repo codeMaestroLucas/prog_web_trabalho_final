@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from models.mod_products import Product as modProduct
 from schemas.sch_products import Product as schProduct
 from database import get_db
-from utils import check_if_exists
+from utils import check_if_exists, return_formatted_data
 
 router = APIRouter()
 
@@ -36,9 +36,9 @@ def create_product(product: schProduct,
     return db_product
 
 
-@router.get("/products/{product_id}", response_model= schProduct)
+@router.get("/products/{product_id}")
 def read_product(product_id: int,
-             db: Session = Depends(get_db)) -> modProduct:
+             db: Session = Depends(get_db)):
     """Função que retorna um produto criado baseado no ID.
 
     Args:
@@ -57,7 +57,7 @@ def read_product(product_id: int,
 
     check_if_exists('products', product_to_get, db)
     
-    return product_to_get
+    return return_formatted_data(product_to_get, db)
 
 
 @router.put('/products/{product_id}', response_model= schProduct)
@@ -89,8 +89,7 @@ def update_product(product_id: int,
                     in_stock=  product.in_stock
                     )
     
-    check_if_exists('products', new_product, db, invert= True) # New
-    
+    check_if_exists('products', new_product, db, invert= True)
     stmt = update(modProduct).where(modProduct.id == product_id).values(
         name= product.name,
         price= product.price,

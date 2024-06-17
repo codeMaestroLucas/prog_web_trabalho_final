@@ -1,3 +1,11 @@
+from typing import Union, List, Tuple, Dict, Any
+from sqlalchemy.orm import Session
+from sqlalchemy import select, and_, update
+from fastapi import HTTPException, Depends
+from database import get_db
+from models.mod_orders import Order as modOrder
+from models.mod_products import Product as modProduct
+from models.mod_users import User as modUser
 from typing import Union, List, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_
@@ -28,18 +36,11 @@ def check_if_exists(
         - ivert= False: a função buscará por um objeto que já existe no DB. Util
         na hora de se pegar um objeto, fazer o update e deletá-lo.
         - ivert= True: a função buscará por um objeto que não existe no DB. Util
-        na hora de se criar um objeto e fazer o update.
+        na hora de se criar um objeto.
 
     Raises:
         HTTPException: Caso o objeto não exista no DB.
     """
-
-    print('TO_CHECK: ', to_check)
-    print('OBJ: ', object_to_check)
-    print('DB: ', db)
-    print('INVERT: ', invert)
-    print('='*100)
-
     if to_check in 'orders' or isinstance(object_to_check, modOrder):
         name_to_check = 'Pedido'
         fields_to_check: Tuple[str] = ('user_id', 'product_id', 'quantity',)
@@ -54,15 +55,6 @@ def check_if_exists(
         name_to_check = 'Produto'
         fields_to_check: Tuple[str] = ('name',)
         table_to_check = modProduct
-        
-    else:
-        raise HTTPException(status_code= 400,
-                            detail= f"{name_to_check} não existe.")
-
-    print('Nome do objeto a verificar:', name_to_check)
-    print('Campos a verificar:', fields_to_check)
-    print('Tabela a verificar:', table_to_check)
-    print('='*100)
 
     conditions: List[str] = []
     
@@ -72,12 +64,8 @@ def check_if_exists(
             conditions.append(getattr(table_to_check, field) == field_value)
 
         query = select(table_to_check).where(and_(*conditions))
-        print('CONDITIONS:', conditions)
-        print('Query SQL gerada:', query)
-
         exists = db.execute(query).scalars().first()
-        print('Exists:', exists)
-
+        
         if invert:
             if exists:
                 raise HTTPException(status_code= 400,
@@ -91,39 +79,105 @@ def check_if_exists(
             raise HTTPException(status_code= 400,
                                 detail= f"{name_to_check} não existe.")
 
-    finally:
-        print('#'*100)
-
-        
-
-def return_order_formated(order: modOrder,
-                          db: Session = Depends(get_db)) -> dict:
-    """Função usada para formatar a saída da função 'GET_ORDER' mostrando os
-    campos de 'id_order, 'user_name, 'product_name, 'product_price' e
-    'product_quantity'.
+def return_formatted_data(
+    obj: Union[modOrder, modProduct, modUser],
+    db: Session = Depends(get_db)) -> Dict[str, Any]:
+    """Função usada para formatar a saída de um objeto 'modOrder', 'modProduct' ou 'modUser'.
 
     Args:
-        order (modOrder): Pedido.
+        obj (Union[modOrder, modProduct, modUser]): Objeto a ser formatado.
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        dict: Dicionário que contém os campos selecionados.
+        dict: Dicionário com os dados formatados.
     """
-    stmt = select(modOrder.id,
-                  modUser.name,
-                  modProduct.name, modProduct.price,
-                  modOrder.quantity, modOrder.total_value).\
-            join(modUser).join(modProduct).\
-            where(modOrder.id == order.id)
+    if isinstance(obj, modProduct):
+        stmt = select(modProduct.id, modProduct.name, modProduct.price, modProduct.in_stock)\
+            .where(modProduct.id == obj.id)
+        result = db.execute(stmt).first()
+        
+        formatted_data = {
+            'id': result[0],
+            'name': result[1],
+            'price': f'${result[2]:.2f}',
+            'in_stock': result[3]
+        }
+        
+    elif isinstance(obj, modUser):
+        stmt = select(modUser.id, modUser.name, modUser.email).where(modUser.id == obj.id)
+        result = db.execute(stmt).first()
+
+        formatted_data = {
+            'id': result[0],
+            'name': result[1],
+            'email': result[2]
+        }
+        
+    elif isinstance(obj, modOrder):
+        stmt = select(modOrder.id,
+                      modUser.name,
+                      modProduct.name, modProduct.price,
+                      modOrder.quantity).\
+                join(modUser).join(modProduct).\
+                where(modOrder.id == obj.id)
+        
+        result = db.execute(stmt).first()
+
+        formatted_data = {
+            'id': result[0],
+            'user_name': result[1],
+            'product_name': result[2],
+            'product_unitary_price': f'${result[3]:.2f}',
+            'product_quantity': f'{result[4]}x',
+            'total_value': f'${(result[3] * result[4]):.2f}'
+        }
+        
+    else:
+        raise ValueError("Tipo de objeto não suportado para formatação.")
     
-    _order = db.execute(stmt).first()
+    return formatted_data
 
-    order_data: dict = {}
-    order_data['id'] = _order[0]
-    order_data['user_name'] = _order[1]
-    order_data['product_name'] = _order[2]
-    order_data['product_unitary_price'] = f'${_order[3]:.2f}'
-    order_data['product_quantity'] = f'{_order[4]}x'
-    order_data['total_value'] = f'${_order[5]:.2f}'
+def verify_quantity(order: modOrder,
+                    quantity: int, db: Session = Depends(get_db)) -> int:
+    """Função usada para verificar a quantidade em estoque e atualizá-la
+    conforme o necessário.
 
-    return order_data
+    Args:
+        order (modOrder): Pedido.
+        quantity (int): Quantidade.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: Caso o produto não tenha sido encontrado.
+        HTTPException: Caso não haja nenhum produto em estoque.
+        HTTPException: Caso a quantidade seja maior do que o valor em estoque.
+
+    Returns:
+        int: A quantidade.
+    """
+    stmt = select(modProduct.in_stock).where(modProduct.id == order.product_id)
+    result = db.execute(stmt).first()
+
+    if not result:
+        raise HTTPException(status_code= 404, detail= "Produto não encontrado.")
+
+    in_stock = result[0]
+
+    if in_stock == 0:
+        raise HTTPException(status_code= 404, detail= "Adicione mais produtos no \
+estoque para poder continuar.")
+
+    if in_stock - quantity < 0:
+        raise HTTPException(status_code= 404, detail= f"Quantidade indisponível \
+para retirada. Temos apenas {in_stock} desse produto em estoque.")
+    
+    
+    update_stmt = (
+        update(modProduct)
+        .where(modProduct.id == order.product_id)
+        .values(in_stock= in_stock - quantity)
+    )
+    db.execute(update_stmt)
+    db.commit()
+    
+    return quantity

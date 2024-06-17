@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from models.mod_users import User as modUser
 from schemas.sch_users import User as schUser
 from database import get_db
-from utils import check_if_exists
+from utils import check_if_exists, return_formatted_data
 
 router = APIRouter()
 
@@ -43,9 +43,9 @@ def create_user(user: schUser,
         raise HTTPException(status_code= 400, detail= "Email em uso.")
     
 
-@router.get("/users/{user_id}", response_model= schUser)
+@router.get("/users/{user_id}")
 def read_user(user_id: int,
-             db: Session = Depends(get_db)) -> modUser:
+             db: Session = Depends(get_db)) -> dict:
     """Função que retorna um usuário criado baseado no ID.
 
     Args:
@@ -64,7 +64,7 @@ def read_user(user_id: int,
 
     check_if_exists('users', user_to_get, db)
     
-    return user_to_get
+    return return_formatted_data(user_to_get, db)
 
 
 @router.put('/users/{user_id}', response_model= schUser)
