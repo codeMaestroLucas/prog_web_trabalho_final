@@ -48,12 +48,12 @@ def check_if_exists(
         
     elif to_check in 'users' or isinstance(object_to_check, modUser):
         name_to_check = 'Usuário'
-        fields_to_check: Tuple[str] = ('name',)
+        fields_to_check: Tuple[str] = ('name', 'email')
         table_to_check = modUser
 
     elif to_check in 'products' or isinstance(object_to_check, modProduct):
         name_to_check = 'Produto'
-        fields_to_check: Tuple[str] = ('name',)
+        fields_to_check: Tuple[str] = ('name', 'price',)
         table_to_check = modProduct
 
     conditions: List[str] = []
@@ -76,7 +76,7 @@ def check_if_exists(
                                     detail= f"{name_to_check} não existe.")
             
     except AttributeError:
-            raise HTTPException(status_code= 400,
+        raise HTTPException(status_code= 400,
                                 detail= f"{name_to_check} não existe.")
 
 def return_formatted_data(
