@@ -15,8 +15,7 @@ def create_product(product: schProduct,
 
     Args:
         product (schProduct): Produto que será criado.
-        db (Session, optional): Sessão de banco de dados usada para enviar os
-        dados. Defaults to Depends(get_db).
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
         modProduct: O produto criado.
@@ -43,14 +42,13 @@ def read_product(product_id: int,
 
     Args:
         product_id (int): ID do produto.
-        db (Session, optional): Sessão de banco de dados que será usada para
-        enviar os dados. Defaults to Depends(get_db).
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: caso não haja um ID correspondente ao que foi solicitado.
+        HTTPException: Caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
-        modProduct: produto correspondente ao ID solicitado.
+        modProduct: Produto correspondente ao ID solicitado.
     """
     db_query = select(modProduct).where(modProduct.id == product_id)
     product_to_get = db.execute(db_query).scalars().first()
@@ -112,7 +110,7 @@ def delete_product(product_id: int,
         db (Session, optional): Conexão com DB. Defaults to Depends(get_db).
 
     Returns:
-        str: Mensagem de retorno.
+        dict: Mensagem de retorno.
     """
     db_query = select(modProduct).where(modProduct.id == product_id)
     product_to_delete = db.execute(db_query).scalars().first()

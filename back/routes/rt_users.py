@@ -16,8 +16,7 @@ def create_user(user: schUser,
 
     Args:
         user (schUser): Usuário que será criado.
-        db (Session, optional): Sessão de banco de dados usada para enviar os
-        dados. Defaults to Depends(get_db).
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
         modUser: O usuário criado.
@@ -50,14 +49,13 @@ def read_user(user_id: int,
 
     Args:
         user_id (int): ID do usuário.
-        db (Session, optional): Sessão de banco de dados que será usada para
-        enviar os dados. Defaults to Depends(get_db).
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Raises:
         HTTPException: caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
-        modUser: usuário correspondente ao ID solicitado.
+        modUser: Usuário correspondente ao ID solicitado.
     """
     db_query = select(modUser).where(modUser.id == user_id)
     user_to_get = db.execute(db_query).scalars().first()
@@ -127,12 +125,7 @@ def delete_user(user_id: int,
     
     stmt = delete(modUser).where(modUser.id == user_id)
 
-    try:
-        db.execute(stmt)
-        db.commit()
-        
-        return {'msg' : 'Usuário deletado.'}
+    db.execute(stmt)
+    db.commit()
     
-    except:
-        db.rollback()
-        return {'msg' : 'Falha ao deletar o usuário.'}
+    return {'msg' : 'Usuário deletado.'}

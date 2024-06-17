@@ -33,9 +33,9 @@ def check_if_exists(
         invert (bool, optional): Altera o funcionamento da função.
         Defaults to False.
         
-        - ivert= False: a função buscará por um objeto que já existe no DB. Util
+        - ivert= False: A função buscará por um objeto que já existe no DB. Util
         na hora de se pegar um objeto, fazer o update e deletá-lo.
-        - ivert= True: a função buscará por um objeto que não existe no DB. Util
+        - ivert= True: A função buscará por um objeto que não existe no DB. Util
         na hora de se criar um objeto.
 
     Raises:
@@ -82,7 +82,8 @@ def check_if_exists(
 def return_formatted_data(
     obj: Union[modOrder, modProduct, modUser],
     db: Session = Depends(get_db)) -> Dict[str, Any]:
-    """Função usada para formatar a saída de um objeto 'modOrder', 'modProduct' ou 'modUser'.
+    """Função usada para formatar a saída de um objeto 'modOrder', 'modProduct'
+    ou 'modUser'.
 
     Args:
         obj (Union[modOrder, modProduct, modUser]): Objeto a ser formatado.
@@ -153,7 +154,7 @@ def verify_quantity(order: modOrder,
         HTTPException: Caso a quantidade seja maior do que o valor em estoque.
 
     Returns:
-        int: A quantidade.
+        int: Quantidade.
     """
     stmt = select(modProduct.in_stock).where(modProduct.id == order.product_id)
     result = db.execute(stmt).first()

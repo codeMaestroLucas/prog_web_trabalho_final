@@ -22,14 +22,14 @@ class User(BaseModel):
         o campo passado.
 
         Args:
-            name (str): nome.
+            name (str): Nome.
 
         Raises:
-            ValueError: Essse erro será levantado caso algum caractere especial
-            esteja dentro do nome passado.
+            ValueError: Caso algum caractere especial esteja dentro do nome
+            passado.
 
         Returns:
-            str: retorna o nome tratado.
+            str: retorna o nome validado e tratado.
         """
         if any(char in name for char in '!@#$%^&*()'):
             raise ValueError("O nome do usuário não pode conter caracteres especiais.")
@@ -41,7 +41,7 @@ class User(BaseModel):
         """Função usada para validar o email fornecido pelo usuário.
 
         Args:
-            email (str): email fornecido.
+            email (str): Email.
 
         Raises:
             ValueError: Caso o email não se enquadre na opção de regex estabelecida
@@ -70,7 +70,7 @@ class User(BaseModel):
         """
         
         if not email_regex.match(email):
-            raise ValueError('Invalid email address')
+            raise ValueError('Endere;o de email inválido.')
         
         return email.strip()
     
@@ -79,19 +79,19 @@ class User(BaseModel):
         """Função usada para validar a senha fornecida pelo usuário.
 
         Args:
-            password (str): senha fornecida pelo usuário.
+            password (str): Senha fornecida pelo usuário.
 
         Raises:
         
-            1. ValueError: caso a senha seja menor que 8 caracteres;
+            1. ValueError: Caso a senha seja menor que 8 caracteres;
             
-            2. ValueError: caso a senha não tenha um caractere maiúsculo;
+            2. ValueError: Caso a senha não tenha um caractere maiúsculo;
 
-            3. ValueError: caso a senha não tenha um caractere minúculo;
+            3. ValueError: Caso a senha não tenha um caractere minúculo;
             
-            4. ValueError: caso a senha não tenha um número;
+            4. ValueError: Caso a senha não tenha um número;
 
-            5. ValueError: caso a senha não tenha um caractere especial.
+            5. ValueError: Caso a senha não tenha um caractere especial.
 
         Returns:
             str: Retorna a senha validada.

@@ -20,14 +20,14 @@ class Product(BaseModel):
         o campo passado.
 
         Args:
-            name (str): nome.
+            name (str): Nome.
 
         Raises:
-            ValueError: Essse erro será levantado caso algum caractere especial
-            esteja dentro do nome passado.
+            ValueError: Caso algum caractere especial esteja dentro do nome
+            passado.
 
         Returns:
-            str: retorna o nome tratado.
+            str: Retorna o nome validado e tratado.
         """
         if any(char in name for char in '!@#$%^&*()'):
             raise ValueError("O nome do produto não pode conter caracteres especiais.")
@@ -41,7 +41,7 @@ class Product(BaseModel):
         fornecido pelo usuário.
         
         Args:
-            price (float): preço do produto.
+            price (float): Preço do produto.
 
         Raises:
             
@@ -66,7 +66,7 @@ class Product(BaseModel):
         fornecido pelo usuário.
 
         Args:
-            in_stock (int): produtos em estoque.
+            in_stock (int): Produtos em estoque.
 
         Raises:
             
@@ -75,7 +75,7 @@ class Product(BaseModel):
             2. ValueError: Quando o valor fornecido for menor do que zero.
 
         Returns:
-            int: retorna o valor de produtos em estoque validado.
+            int: Retorna o valor de produtos em estoque validado.
         """
         if not isinstance(in_stock, int):
             raise ValueError("O nº produtos em estoque deve ser um valor numérico inteiro.")

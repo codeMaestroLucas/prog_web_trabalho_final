@@ -30,7 +30,7 @@ class Order(BaseModel):
             2. ValueError: Quando o valor fornecido for menor ou igual a zero.
 
         Returns:
-            int: retorna o valor de quantidade validado.
+            int: Retorna o valor de quantidade validado.
         """
         if not isinstance(quantity, int):
             raise ValueError("A quantidade deve ser um valor numérico inteiro.")

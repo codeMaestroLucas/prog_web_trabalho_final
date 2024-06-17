@@ -2,7 +2,7 @@ from database import Base
 from sqlalchemy import Column, Integer, String
 
 class User(Base):
-    """Classe de Usuário
+    """Classe de Usuário.
     
     Estabelece uma estrutura que será usada no Banco de Dados.
     """

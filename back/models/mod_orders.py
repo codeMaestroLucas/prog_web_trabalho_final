@@ -2,7 +2,7 @@ from database import Base
 from sqlalchemy import Column, Integer, ForeignKey, Float
 
 class Order(Base):
-    """Classe de Pedidos
+    """Classe de Pedidos.
     
     Estabelece uma estrutura que será usada no Banco de Dados.
     """

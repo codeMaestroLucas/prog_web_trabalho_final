@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from models.mod_orders import Order as modOrder
 from models.mod_products import Product as modProduct
 from models.mod_users import User as modUser
@@ -12,7 +11,7 @@ from utils import check_if_exists, return_formatted_data, verify_quantity
 router = APIRouter()
 
 def check_if_order_exists(db_order: modOrder, db: Session = Depends(get_db), invert= False):
-    """Função usada para chamar todas as verificações necessárias para pedido.
+    """Função usada para chamar todas as verificações necessárias para os pedidos.
 
     Args:
         db_order (modOrder): Pedido a ser verificado
@@ -40,8 +39,7 @@ def create_order(order: schOrder,
 
     Args:
         order (schOrder): Pedido que será criado.
-        db (Session, optional): Sessão de banco de dados usada para enviar os
-        dados. Defaults to Depends(get_db).
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
         modOrder: O pedido criado.
@@ -67,14 +65,13 @@ def read_order(order_id: int,
 
     Args:
         order_id (int): ID do pedido.
-        db (Session, optional): Sessão de banco de dados que será usada para
-        enviar os dados. Defaults to Depends(get_db).
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Raises:
         HTTPException: caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
-        modOrder: pedido correspondente ao ID solicitado.
+        modOrder: Pedido correspondente ao ID solicitado.
     """
     db_query = select(modOrder).where(modOrder.id == order_id)
     order_to_get = db.execute(db_query).scalars().first()
@@ -103,8 +100,8 @@ def update_order(order_id: int,
     
     check_if_order_exists(old_order, db)
     
-    to_remove = order.quantity - old_order.quantity
-    verify_quantity(old_order, to_remove, db)
+    quantity_to_remove = order.quantity - old_order.quantity
+    verify_quantity(old_order, quantity_to_remove, db)
     
     stmt = update(modOrder).where(modOrder.id == order_id).values(
         user_id= order.user_id,
@@ -112,16 +109,11 @@ def update_order(order_id: int,
         quantity= order.quantity
     )
 
-    try:
-        db.execute(stmt)
-        db.commit()
+    db.execute(stmt)
+    db.commit()
 
-        updated_order = db.query(modOrder).filter(modOrder.id == order_id).first()
-        return updated_order
-
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code= 400, detail= "Erro ao atualizar o pedido.")
+    updated_order = db.query(modOrder).filter(modOrder.id == order_id).first()
+    return updated_order
 
 
 @router.delete('/order/{order_id}')
@@ -134,25 +126,20 @@ def delete_order(order_id: int,
         db (Session, optional): Conexão com DB. Defaults to Depends(get_db).
 
     Returns:
-        str: Mensagem de retorno.
+        dict: Mensagem de retorno.
     """
     db_query = select(modOrder).where(modOrder.id == order_id)
     order_to_delete = db.execute(db_query).scalars().first()
     
     check_if_order_exists(order_to_delete, db)
 
-    to_add = order_to_delete.quantity * (-1)
-    verify_quantity(order_to_delete, to_add, db)
+    quantity_to_add = order_to_delete.quantity * (-1)
+    verify_quantity(order_to_delete, quantity_to_add, db)
     
     
     stmt = delete(modOrder).where(modOrder.id == order_id)
 
-    try:
-        db.execute(stmt)
-        db.commit()
-        
-        return {'msg' : 'Pedido deletado.'}
+    db.execute(stmt)
+    db.commit()
     
-    except:
-        db.rollback()
-        return {'msg' : 'Falha ao deletar o pedido.'}
+    return {'msg' : 'Pedido deletado.'}
