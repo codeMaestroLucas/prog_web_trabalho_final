@@ -2,18 +2,23 @@ from typing import Union, List, Tuple, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_, update
 from fastapi import HTTPException, Depends
-from database import get_db
-from models.mod_orders import Order as modOrder
-from models.mod_products import Product as modProduct
-from models.mod_users import User as modUser
+from .database import get_db
+from .models.mod_orders import Order as modOrder
+from .models.mod_products import Product as modProduct
+from .models.mod_users import User as modUser
 from typing import Union, List, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_
 from fastapi import HTTPException, Depends
-from database import get_db
-from models.mod_orders import Order as modOrder
-from models.mod_products import Product as modProduct
-from models.mod_users import User as modUser
+
+
+def check_if_user_exists(user: modUser,
+                         db: Session = Depends(get_db),
+                         invert= False) -> bool:
+    ...
+    
+
+
 
 def check_if_exists(
     to_check: str,
@@ -182,3 +187,6 @@ para retirada. Temos apenas {in_stock} desse produto em estoque.")
     db.commit()
     
     return quantity
+
+def check_len_table(): ...
+def insert_data(): ...
