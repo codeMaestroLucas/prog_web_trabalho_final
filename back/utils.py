@@ -53,7 +53,7 @@ def check_if_exists(
 
     elif to_check in 'products' or isinstance(object_to_check, modProduct):
         name_to_check = 'Produto'
-        fields_to_check: Tuple[str] = ('name', 'price',)
+        fields_to_check: Tuple[str] = ('name', 'price', 'in_stock')
         table_to_check = modProduct
 
     conditions: List[str] = []

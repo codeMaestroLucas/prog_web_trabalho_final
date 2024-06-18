@@ -10,7 +10,9 @@ from utils import check_if_exists, return_formatted_data, verify_quantity
 
 router = APIRouter()
 
-def check_if_order_exists(db_order: modOrder, db: Session = Depends(get_db), invert= False):
+def check_if_order_exists(db_order: modOrder,
+                          db: Session = Depends(get_db),
+                          invert= False):
     """Função usada para chamar todas as verificações necessárias para os pedidos.
 
     Args:
@@ -68,7 +70,7 @@ def read_order(order_id: int,
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: caso não haja um ID correspondente ao que foi solicitado.
+        HTTPException: Caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
         modOrder: Pedido correspondente ao ID solicitado.
@@ -109,11 +111,17 @@ def update_order(order_id: int,
         quantity= order.quantity
     )
 
+    new_order = modOrder(
+                    user_id= order.user_id,
+                    product_id= order.product_id,
+                    quantity= verify_quantity(order, order.quantity, db),
+                    )
+    check_if_order_exists(new_order, db, invert= True)
+
     db.execute(stmt)
     db.commit()
 
-    updated_order = db.query(modOrder).filter(modOrder.id == order_id).first()
-    return updated_order
+    return new_order
 
 
 @router.delete('/order/{order_id}')

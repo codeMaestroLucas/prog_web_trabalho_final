@@ -10,8 +10,8 @@ async def send_data(file: str, url: str):
     popular o DB.
 
     Args:
-        file (str): arquivo JSON que contém os dados.
-        url (str): url do endpoint que os dados serão enviados.
+        file (str): Arquivo JSON que contém os dados.
+        url (str): Url do endpoint que os dados serão enviados.
     """
     with open(file, 'r', encoding= 'utf-8') as file:
         data = json.load(file)

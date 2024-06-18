@@ -70,7 +70,7 @@ class User(BaseModel):
         """
         
         if not email_regex.match(email):
-            raise ValueError('Endere;o de email inválido.')
+            raise ValueError('Endereço de email inválido.')
         
         return email.strip()
     

@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, ForeignKey, Float
+from sqlalchemy import Column, Integer, ForeignKey
 
 class Order(Base):
     """Classe de Pedidos.

@@ -88,12 +88,12 @@ def update_product(product_id: int,
                     )
     
     check_if_exists('products', new_product, db, invert= True)
+    
     stmt = update(modProduct).where(modProduct.id == product_id).values(
         name= product.name,
         price= product.price,
         in_stock=  product.in_stock
     )
-
     db.execute(stmt)
     db.commit()
 
@@ -119,12 +119,7 @@ def delete_product(product_id: int,
     
     stmt = delete(modProduct).where(modProduct.id == product_id)
 
-    try:
-        db.execute(stmt)
-        db.commit()
-        
-        return {'msg' : 'Produto deletado.'}
+    db.execute(stmt)
+    db.commit()
     
-    except:
-        db.rollback()
-        return {'msg' : 'Falha ao deletar o Produto.'}
+    return {'msg' : 'Produto deletado.'}

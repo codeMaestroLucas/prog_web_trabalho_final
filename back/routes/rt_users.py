@@ -52,7 +52,7 @@ def read_user(user_id: int,
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: caso não haja um ID correspondente ao que foi solicitado.
+        HTTPException: Caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
         modUser: Usuário correspondente ao ID solicitado.
