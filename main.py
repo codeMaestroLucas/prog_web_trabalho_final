@@ -55,7 +55,7 @@ mount_app(app)
 
 
 @app.get('/', response_class= HTMLResponse)
-def home(request: Request):
+def login(request: Request):
     return templates.TemplateResponse(
-        request= request, name= 'home.html'
+        request= request, name= 'login.html'
     )

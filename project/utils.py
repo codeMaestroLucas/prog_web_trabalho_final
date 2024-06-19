@@ -242,8 +242,8 @@ def verify_quantity(order: modOrder,
     if in_stock == 0:
         if quantity > 0: # Para quando a quantidade for "zero" e o produto for deletado.
             db.rollback()
-            raise HTTPException(status_code= 404, detail= "Adicione mais produtos no \
-estoque para poder continuar.")
+            raise HTTPException(status_code= 404, detail= "Adicione mais \
+produtos no estoque para poder continuar.")
 
     if in_stock - quantity < 0:
         db.rollback()
