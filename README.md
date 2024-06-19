@@ -35,7 +35,7 @@ Este é um projeto que usa FastAPI, SQLAlchemy, e SQLite para criar uma aplicaç
 ## Pré-requisitos
 
 - [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
+<!-- - [Docker Compose](https://docs.docker.com/compose/) -->
 
 ## Instalação
 

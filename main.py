@@ -7,14 +7,12 @@ from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 from project.routes import rt_products, rt_users, rt_orders
 from project.database import Base, engine
-import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Função usada para iniciar o DB."""
     Base.metadata.create_all(bind= engine)
     #TODO: implementar Checagem se tabelas existem
-    #TODO:
     yield
 
 def add_routes(app: FastAPI):
@@ -28,6 +26,16 @@ def add_routes(app: FastAPI):
     for route in routes:
         app.include_router(route)
 
+def mount_app(app: FastAPI):
+    """Função usada para montar o APP com relação às pastas STATIC e TEMPLATES.
+    """
+    app.mount(
+        '/static', StaticFiles(directory= 'project/static'), name= 'static'
+    )
+
+    global templates
+    templates = Jinja2Templates(directory= 'project/templates')
+    
 
 app = FastAPI(
     title='Trabalho Final ProgWeb',
@@ -35,8 +43,19 @@ app = FastAPI(
     lifespan= lifespan
 )
 
-@app.get('/')
-def home():
-    return {'msg' : 'Hello World!'}
-
 add_routes(app)
+
+mount_app(app)
+
+
+
+
+
+
+
+
+@app.get('/', response_class= HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse(
+        request= request, name= 'home.html'
+    )
