@@ -11,8 +11,8 @@ from project.database import Base, engine
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Função usada para iniciar o DB."""
-    Base.metadata.create_all(bind= engine)
-    #TODO: implementar Checagem se tabelas existem
+    Base.metadata.create_all(bind=engine)
+    # TODO: implementar Checagem se tabelas existem
     yield
 
 def add_routes(app: FastAPI):
@@ -27,35 +27,41 @@ def add_routes(app: FastAPI):
         app.include_router(route)
 
 def mount_app(app: FastAPI):
-    """Função usada para montar o APP com relação às pastas STATIC e TEMPLATES.
-    """
-    app.mount(
-        '/static', StaticFiles(directory= 'project/static'), name= 'static'
-    )
+    """Função usada para montar o APP com relação às pastas STATIC e TEMPLATES."""
+    app.mount('/static', StaticFiles(directory='project/static'), name='static')
 
     global templates
-    templates = Jinja2Templates(directory= 'project/templates')
-    
+    templates = Jinja2Templates(directory='project/templates')
 
 app = FastAPI(
     title='Trabalho Final ProgWeb',
     description='API de gerenciamento de uma pizzaria.',
-    lifespan= lifespan
+    lifespan=lifespan
 )
 
 add_routes(app)
-
 mount_app(app)
 
-
-
-
-
-
-
-
-@app.get('/', response_class= HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def login(request: Request):
     return templates.TemplateResponse(
         request= request, name= 'login.html'
     )
+
+@app.get("/esqueceu", response_class=HTMLResponse)
+def esqueceu_senha(request: Request):
+    return templates.TemplateResponse(
+        request= request, name= 'esqueceu.html'
+        )
+
+@app.get("/cadastro", response_class=HTMLResponse)
+def cadastro(request: Request):
+    return templates.TemplateResponse(
+        request= request, name= 'cadastro.html'
+        )
+
+@app.get("/home", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse(
+        request= request, name= 'home.html'
+        )

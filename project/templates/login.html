@@ -1,26 +1,24 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href=" {{ url_for ('static', path='login_style.css') }} ">
-
+    <link rel="stylesheet" href="{{ url_for('static', path='login.css') }}">
     <title>Login</title>
-
 {% endblock %}
-    
 
 {% block body %}
+
 <main class="main">
     <h1 class="title comfortaa-700">Login<span class="span">.</span></h1>
-    <form action="#" method="post" class="form_login">
-        <input type="text" name="email" id="email" placeholder="Email" class="input ">
+    <form action="/users/" method="post" class="form_login">
+        <input type="text" name="email" id="email" placeholder="Email" class="input">
 
-        <input type="password" name="senha" id="senha" placeholder="Senha" class="input ">
+        <input type="password" name="senha" id="senha" placeholder="Senha" class="input">
 
-        <input type="submit" value="Entrar" class="entrar raleway-900">
+        <a href="/home" class="entrar raleway-900 raleway-400">Entrar</a>
 
         <div class="outras_opcoes">
-            <a href="esqueceu_senha.html" class="esqueceu_a_senha raleway-400">Esqueceu a senha?</a>
-            <a href="cadastro.html" class="cadastre_se raleway-400">Cadastre-se</a>
+            <a href="/esqueceu" class="esqueceu_a_senha raleway-400">Esqueceu a senha?</a>
+            <a href="/cadastro" class="cadastre_se raleway-400">Cadastre-se</a>
         </div>
     </form>
 </main>

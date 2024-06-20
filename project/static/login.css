@@ -21,8 +21,8 @@ body {
     margin: 20px;
     padding: 30px 20px;
 
-    width: 35vw;
-    height: 70vh;
+    width: 30vw;
+    height: 65vh;
     background-color: var(--card-bg-color);
     border-radius: 7px;
 }
@@ -64,12 +64,12 @@ body {
     position: relative;
     margin: auto;
 
-    margin-top: 15px;
-    padding: 5px;
+    text-align: center;
 
     letter-spacing: 2px;
+    padding-top: 15px;
     
-    width: 30%;
+    width: 40%;
     height: 4rem;
     font-size: 1.5rem;
     color: var(--txt-contrast-blue);
@@ -82,10 +82,9 @@ body {
 .main .form_login .entrar:hover {
     cursor: pointer;
     background-color: rgb(145, 185, 255);
-    letter-spacing: 0px;
+    letter-spacing: 1px;
 
 }
-
 .main .form_login .outras_opcoes {
     display: flex;
     flex-direction: column;

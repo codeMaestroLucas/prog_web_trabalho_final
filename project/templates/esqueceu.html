@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href=" {{ url_for ('static', path='esqueceu.css') }} ">
+
+    <title>Esqueceu senha</title>
+{% endblock %}
+
+
+{% block body %}
+    
+<main class="main">
+    <h1 class="title comfortaa-700">Nova Senha<span class="span">.</span></h1>
+    <form action="#" method="post" class="form_login">
+        <input type="text" name="email" id="email" placeholder="Email" class="input ">
+
+        <input type="password" name="senha" id="senha" placeholder="Nova Senha" class="input ">
+
+        <input type="password" name="senha" id="senha" placeholder="Nova Senha" class="input ">
+
+        <a href="/" class= "confirmar raleway-900">Confirmar</a>
+    </form>
+</main>
+
+{% endblock %}
