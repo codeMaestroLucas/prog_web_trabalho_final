@@ -8,7 +8,9 @@ from ..schemas.sch_orders import Order as schOrder
 from ..database import get_db
 from ..utils import check_if_exists, return_formatted_data, verify_quantity
 
-router = APIRouter()
+router = APIRouter(
+    tags= ['Order Routes']
+)
 
 def check_if_order_exists(db_order: modOrder,
                           db: Session = Depends(get_db),
@@ -34,7 +36,7 @@ def check_if_order_exists(db_order: modOrder,
     check_if_exists('product', db_product, db)
 
 
-@router.post("/orders/", response_model= schOrder)
+@router.post("/orders/create/", response_model= schOrder)
 def create_order(order: schOrder,
                 db: Session = Depends(get_db)) -> modOrder:
     """Função usada para criar um novo pedido.
@@ -60,7 +62,7 @@ def create_order(order: schOrder,
     return db_order
 
 
-@router.get("/orders/{order_id}")
+@router.get("/orders/read/{order_id}")
 def read_order(order_id: int,
              db: Session = Depends(get_db)):
     """Função que retorna um pedido criado baseado no ID.
@@ -83,7 +85,7 @@ def read_order(order_id: int,
     return return_formatted_data(order_to_get, db)
 
 
-@router.put('/orders/{order_id}', response_model= schOrder)
+@router.put('/orders/update/{order_id}', response_model= schOrder)
 def update_order(order_id: int,
                 order: schOrder,
                 db: Session = Depends(get_db)) -> modOrder:
@@ -124,7 +126,7 @@ def update_order(order_id: int,
     return new_order
 
 
-@router.delete('/order/{order_id}')
+@router.delete('/order/delete/{order_id}')
 def delete_order(order_id: int,
                 db: Session = Depends(get_db)) -> dict:
     """Função usada para deletar um pedido baseado no ID.

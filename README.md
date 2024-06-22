@@ -4,9 +4,8 @@ Dentro de um pedido só cabem UM produto, tem que ser 1 ou vários.
 Inserção de dados automaticamente não está funcionando. -> Usar as funções do
 backend ao invés de fazer requests.
 
-Quebrar as Funções maiores de UTILS.py e quebrá-las em funções menores
-específicas de cada uma. Uma maior irá englobá-las e somente fazer o check para
-chamar as menores.
+Integrar as rotas do back com o front. Criar um rota a mais para pegar as
+requisições e chamar as funções 
 
 Fazer a parte do MOUNT - Live de 3h
 

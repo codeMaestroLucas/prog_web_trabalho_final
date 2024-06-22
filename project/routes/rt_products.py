@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import Depends, HTTPException, Request, Form, APIRouter
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from ..models.mod_products import Product as modProduct
@@ -6,11 +7,42 @@ from ..schemas.sch_products import Product as schProduct
 from ..database import get_db
 from ..utils import check_if_exists, return_formatted_data
 
-router = APIRouter()
 
-@router.post("/products/", response_model= schProduct)
+router = APIRouter(
+    tags= ['Product Routes']
+)
+
+def request_create_product(request: Request,
+                           db: Session = Depends(get_db),
+                           name: str = Form(...),
+                           price: float = Form(...),
+                           in_stock:int = Form(...)) -> schProduct:
+    """Função usada para recebero request ao criar um produto e transformá-lo em
+    um schema para fazer a validação."
+
+    Args:
+        request (Request): Request do HTML.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+        name (str, optional): Nome. Defaults to Form(...).
+        price (float, optional): Preço. Defaults to Form(...).
+        in_stock (int, optional): Quantidade de produtos em estoque. Defaults to
+        Form(...).
+
+    Returns:
+        schProduct: _description_
+    """
+    product = schProduct(
+        name= name,
+        price= price,
+        in_stock= in_stock
+    )
+    return product
+
+
+
+@router.post("/products/create", response_model= schProduct)
 def create_product(product: schProduct,
-                db: Session = Depends(get_db)) -> modProduct:
+                   db: Session = Depends(get_db)) -> modProduct:
     """Função usada para criar um novo produto.
 
     Args:
@@ -35,7 +67,7 @@ def create_product(product: schProduct,
     return db_product
 
 
-@router.get("/products/{product_id}")
+@router.get("/products/read/{product_id}")
 def read_product(product_id: int,
              db: Session = Depends(get_db)):
     """Função que retorna um produto criado baseado no ID.
@@ -58,7 +90,7 @@ def read_product(product_id: int,
     return return_formatted_data(product_to_get, db)
 
 
-@router.put('/products/{product_id}', response_model= schProduct)
+@router.put('/products/update/{product_id}', response_model= schProduct)
 def update_product(product_id: int,
                 product: schProduct,
                 db: Session = Depends(get_db)) -> modProduct:
@@ -100,7 +132,7 @@ def update_product(product_id: int,
     return new_product
 
 
-@router.delete('/product/{product_id}')
+@router.delete('/product/delete/{product_id}')
 def delete_product(product_id: int,
                 db: Session = Depends(get_db)) -> dict:
     """Função usada para deletar um produto baseado no ID.
