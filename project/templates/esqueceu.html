@@ -11,15 +11,17 @@
     
 <main class="main">
     <h1 class="title comfortaa-700">Nova Senha<span class="span">.</span></h1>
-    <form action="/users/update/{{user_id}}" method="post" class="form_login">
+    <form action="/users/update/{user_id}" method="post" class="form_login">
         <input type="text" name="email" id="email" placeholder="Email" class="input ">
 
         <input type="password" name="senha" id="senha" placeholder="Nova Senha" class="input ">
 
-        <input type="password" name="senha" id="senha" placeholder="Nova Senha" class="input ">
-
-        <a href="/" class= "confirmar raleway-900">Confirmar</a>
+        <input type="password" name="senha" id="senha" placeholder="Repita a Senha" class="input ">
     </form>
+
+    <button class= "confirmar">
+        <a href="/" class= "raleway-900">Confirmar</a>
+    </button>
 </main>
 
 {% endblock %}

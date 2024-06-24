@@ -5,9 +5,10 @@ Inserção de dados automaticamente não está funcionando. -> Usar as funções
 backend ao invés de fazer requests.
 
 Integrar as rotas do back com o front. Criar um rota a mais para pegar as
-requisições e chamar as funções 
+requisições e chamar as funções
 
-Fazer a parte do MOUNT - Live de 3h
+O maluco tirou as rotas de crud, colocando elas em uma pasta SERVICE e chamou o
+arquivo de CRUD.py, chamando eles pelas funções com as rotas do FORMS
 
 # Ideias
 Colocar valores de usuário, produtos e pedidos válidos em um JSON para rodar de
@@ -34,7 +35,6 @@ Este é um projeto que usa FastAPI, SQLAlchemy, e SQLite para criar uma aplicaç
 ## Pré-requisitos
 
 - [Docker](https://www.docker.com/)
-<!-- - [Docker Compose](https://docs.docker.com/compose/) -->
 
 ## Instalação
 
@@ -50,9 +50,16 @@ Este é um projeto que usa FastAPI, SQLAlchemy, e SQLite para criar uma aplicaç
     cd prog_web_trabalho_final
     ```
     
-3. Inicie container:
+3. Se já tiver a imagem, Inicie container:
     ```powershell
     docker composer up
+    ```
+
+    Isso pode levar alguns segundos.
+
+4. Se não já tiver a imagem, Inicie container:
+    ```powershell
+    docker composer up --build
     ```
 
     Isso pode levar alguns segundos.
@@ -66,8 +73,8 @@ ou realizar o comando `docker compose down`
 # Descrição dos Diretórios
 
 ```powershell
+
 ├───project
-│   │
 │   ├───insert_data
 │   │
 │   ├───models
@@ -79,6 +86,8 @@ ou realizar o comando `docker compose down`
 │   ├───static
 │   │
 │   ├───templates
+│   │
+│   ├───utils
 ```
 
 - **Project:** diretório que contém os arquivos relacionados com todo o Backend
@@ -94,4 +103,5 @@ serialização usando Pydantic.
     - **Static:** contém os arquivos estáticos - podendo ser JavaScript, CSS e
 imagens - que serão enviados para o cliente;
     - **Templates:** contém os templates em HTML que serão renderizados pelo
-FastAPI para criar páginas web.
+FastAPI para criar páginas web;
+    - **Util:** contém funções que são úteis para outras partes do programa.

@@ -10,10 +10,10 @@
 
 <button class="ic_sair">
     <a href="/">
-        <img src="../static/imgs/ic_sair.png" class="ic_sair" alt="Icone Sair">
+        <img src="../static/imgs/login-imgs/ic_sair.png" class="ic_sair" alt="Icone Sair">
     </a>
 </button>
-<main class="main">
+<main class="main" style= "margin-top: {{ margin_top }}px">
 
     <div class="list_of_products">
         
@@ -21,7 +21,7 @@
             <h1 class="title comfortaa-700">Controle de Estoque<span>.</span></h1>
             <button class="btn create">
                 <a href="/create_product" class="raleway-400">
-                    <img src="../static/imgs/ic_criar.png" alt="create_icon" class="create_icon">
+                    <img src="../static/imgs/login-imgs/ic_criar.png" alt="create_icon" class="create_icon">
                     Novo Produto
                 </a>
             </button>
@@ -37,7 +37,7 @@
                     <li class="prod_data name m-plus-rounded-1c-regular">{{ product.name }}</li>
                 </ul>
                 <ul class="side_data">
-                    <li class="prod_data price m-plus-rounded-1c-regular">$ {{ product.price|round(2) }}</li>
+                    <li class="prod_data price m-plus-rounded-1c-regular">{{ product.price }}</li>
                     <li class="prod_data in_stock m-plus-rounded-1c-regular">Em Estoque: {{ product.in_stock }}</li>
                 </ul>
             </div>
@@ -45,14 +45,14 @@
             <div class="other_tools">
                 <button class="btn update">
                     <a href="/update_product" class="raleway-400">
-                        <img src="../static/imgs/ic_editar.png" alt="edit_icon" class="edit_icon">
+                        <img src="../static/imgs/login-imgs/ic_editar.png" alt="edit_icon" class="edit_icon">
                         Editar
                     </a>
                 </button>
 
                 <button class="btn delete">
                     <a href="/delete_product" class="raleway-400 btn">
-                        <img src="../static/imgs/ic_remover.png" alt="delete_icon" class="delete_icon">
+                        <img src="../static/imgs/login-imgs/ic_remover.png" alt="delete_icon" class="delete_icon">
                         Excluir
                     </a>
                 </button>
@@ -70,16 +70,16 @@
 
             <button class="btn create">
                 <a href="/create_order" class="raleway-400">
-                    <img src="../static/imgs/ic_criar.png" alt="create_icon" class="create_icon">
+                    <img src="../static/imgs/login-imgs/ic_criar.png" alt="create_icon" class="create_icon">
                     Novo Pedido
                 </a>
             </button>
         </div>
 
         {% if orders %}
+        {% for order in orders %}
         <div class="orders">
 
-            {% for order in orders %}
             <div class="order_data">
                 <div class="first_info">
                     <ul class="datas">
@@ -91,30 +91,30 @@
                     </ul>
                 </div>
                 <ul class="other_data">
-                    <li class="ord_data product_unitary_price m-plus-rounded-1c-regular">Valor Unitário: $ {{ order.product_unitary_price }}</li>
-                    <li class="ord_data quantity m-plus-rounded-1c-regular">Quantidade: {{ order.quantity }} X</li>
-                    <li class="ord_data total_value m-plus-rounded-1c-regular">Valor Total: <span>$</span> {{ order.total_value }}</li>
+                    <li class="ord_data product_unitary_price m-plus-rounded-1c-regular">Valor Unitário: {{ order.product_unitary_price }}</li>
+                    <li class="ord_data quantity m-plus-rounded-1c-regular">Quantidade: {{ order.product_quantity }}</li>
+                    <li class="ord_data total_value m-plus-rounded-1c-regular">Valor Total: <span class= "cash_span">{{ order.total_value }}</span></li>
                 </ul>
             </div>
 
             <div class="other_tools">
                 <button class="btn update">
                     <a href="/update_order" class="raleway-400">
-                        <img src="../static/imgs/ic_editar.png" alt="edit_icon" class="edit_icon">
+                        <img src="../static/imgs/login-imgs/ic_editar.png" alt="edit_icon" class="edit_icon">
                         Editar
                     </a>
                 </button>
 
                 <button class="btn delete">
                     <a href="/delete_order" class="raleway-400 btn">
-                        <img src="../static/imgs/ic_remover.png" alt="delete_icon" class="delete_icon">
+                        <img src="../static/imgs/login-imgs/ic_remover.png" alt="delete_icon" class="delete_icon">
                         Excluir
                     </a>
                 </button>
             </div>
-            {% endfor %}
-
+            
         </div>
+        {% endfor %}
         {% endif %}
     </div>
 

@@ -22,7 +22,7 @@ body {
     padding: 30px 20px;
 
     width: 30vw;
-    height: 65vh;
+    height: 75vh;
     background-color: var(--card-bg-color);
     border-radius: 7px;
 }
@@ -63,24 +63,26 @@ body {
 .main .form_login .entrar {
     position: relative;
     margin: auto;
+    margin-top: 5px;
 
     text-align: center;
 
     letter-spacing: 2px;
-    padding-top: 15px;
+    padding-top: 20px;
     
     width: 40%;
     height: 4rem;
+
     font-size: 1.5rem;
     color: var(--txt-contrast-blue);
+
     background-color: rgb(232, 240, 254);
     border-radius: 10px 40px 8px 40px;
     transition: 0.3s ease-in-out;
-
+    cursor: pointer;
 }
 
 .main .form_login .entrar:hover {
-    cursor: pointer;
     background-color: rgb(145, 185, 255);
     letter-spacing: 1px;
 
@@ -91,7 +93,7 @@ body {
     justify-content: center;
     align-items: center;
 
-    margin: 40px 20px;
+    margin: 30px 20px;
     padding-top: 30px;
     border-top: 3px solid rgba(96, 95, 95, 0.234);
     border-radius: 2px;

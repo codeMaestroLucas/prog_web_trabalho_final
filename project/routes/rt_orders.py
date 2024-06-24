@@ -6,7 +6,9 @@ from ..models.mod_products import Product as modProduct
 from ..models.mod_users import User as modUser
 from ..schemas.sch_orders import Order as schOrder
 from ..database import get_db
-from ..utils import check_if_exists, return_formatted_data, verify_quantity
+from ..utils.check_if_exists import check_if_exists
+from ..utils.return_formatted_data import return_formatted_data
+from ..utils.verify_quantity import verify_quantity
 
 router = APIRouter(
     tags= ['Order Routes']

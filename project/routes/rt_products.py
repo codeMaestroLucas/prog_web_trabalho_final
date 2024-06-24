@@ -1,42 +1,41 @@
-from fastapi import Depends, HTTPException, Request, Form, APIRouter
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import Depends, Request, Form, APIRouter
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from ..models.mod_products import Product as modProduct
 from ..schemas.sch_products import Product as schProduct
 from ..database import get_db
-from ..utils import check_if_exists, return_formatted_data
-
+from ..utils.check_if_exists import check_if_exists
+from ..utils.return_formatted_data import return_formatted_data
 
 router = APIRouter(
     tags= ['Product Routes']
 )
 
-def request_create_product(request: Request,
-                           db: Session = Depends(get_db),
-                           name: str = Form(...),
-                           price: float = Form(...),
-                           in_stock:int = Form(...)) -> schProduct:
-    """Função usada para recebero request ao criar um produto e transformá-lo em
-    um schema para fazer a validação."
+# def request_create_product(request: Request,
+#                            db: Session = Depends(get_db),
+#                            name: str = Form(...),
+#                            price: float = Form(...),
+#                            in_stock:int = Form(...)) -> schProduct:
+#     """Função usada para recebero request ao criar um produto e transformá-lo em
+#     um schema para fazer a validação."
 
-    Args:
-        request (Request): Request do HTML.
-        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
-        name (str, optional): Nome. Defaults to Form(...).
-        price (float, optional): Preço. Defaults to Form(...).
-        in_stock (int, optional): Quantidade de produtos em estoque. Defaults to
-        Form(...).
+#     Args:
+#         request (Request): Request do HTML.
+#         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+#         name (str, optional): Nome. Defaults to Form(...).
+#         price (float, optional): Preço. Defaults to Form(...).
+#         in_stock (int, optional): Quantidade de produtos em estoque. Defaults to
+#         Form(...).
 
-    Returns:
-        schProduct: _description_
-    """
-    product = schProduct(
-        name= name,
-        price= price,
-        in_stock= in_stock
-    )
-    return product
+#     Returns:
+#         schProduct: _description_
+#     """
+#     product = schProduct(
+#         name= name,
+#         price= price,
+#         in_stock= in_stock
+#     )
+#     return product
 
 
 

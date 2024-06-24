@@ -8,25 +8,27 @@ from sqlalchemy.exc import IntegrityError
 from ..models.mod_users import User as modUser
 from ..schemas.sch_users import User as schUser
 from ..database import get_db
-from ..utils import check_if_exists, return_formatted_data
+from ..utils.check_if_exists import check_if_exists
+from ..utils.return_formatted_data import return_formatted_data
 
 
 router = APIRouter(
     tags= ['User Routes']
 )
 
-# @router.post('/cadastro')
-# async def request_create_user(request: Request,
-#                               name: str = Form(...),
-#                               email: str = Form(...),
-#                               password: str = Form(...)
-#                               ):
-#     user = schUser(name=name, email=email, password=password)
-#     return await create_user(user, request)
+@router.post('/cadastro')
+async def request_create_user(request: Request,
+                              name: str = Form(...),
+                              email: str = Form(...),
+                              password: str = Form(...)
+                              ):
+    user = schUser(name=name, email=email, password=password)
+    
+    return RedirectResponse(url= "/users/create"), create_user(user, request)
 
 
 @router.post("/users/create", response_model=schUser)
-async def create_user(user: schUser,
+def create_user(user: schUser,
                       db: Session = Depends(get_db)
                       ) -> modUser:
     """Função usada para criar um novo usuário.

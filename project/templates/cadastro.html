@@ -3,7 +3,7 @@
 {% block head %}
     <link rel="stylesheet" href=" {{ url_for ('static', path='cadastro.css') }} ">
 
-    <title>Title</title>
+    <title>Cadastro</title>
 {% endblock %}
     
 
@@ -18,7 +18,10 @@
 
         <input type="password" name="password" id="password" placeholder="Senha" class="input">
 
-        <a href="/" class= "confirmar raleway-900">Confirmar</a>
+        <button class= "confirmar">
+            <a href="/" class= "raleway-900">Confirmar</a>
+        </button>
+
     </form>
 </main>
 

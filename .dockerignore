@@ -1,4 +1,5 @@
 *__pycache__
+*__init__
 *.pyc
 *.pyo
 *.pyd
@@ -18,4 +19,7 @@ compose.yml
 .tox
 .venv
 .env
+venv
+env
 *.db
+/html-css

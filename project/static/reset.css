@@ -18,3 +18,7 @@ html {
 ul {
     list-style-type: none;
 }
+
+input {
+    outline: none;
+}
