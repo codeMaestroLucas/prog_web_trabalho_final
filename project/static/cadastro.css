@@ -73,6 +73,9 @@ body {
     letter-spacing: 2px;
     margin-left: 29%;
     margin-top: 20px;
+
+    font-size: 1.5rem;
+    color: var(--txt-contrast-blue);
     
     width: 40%;
     height: 4rem;
@@ -87,9 +90,4 @@ body {
     cursor: pointer;
     background-color: rgb(145, 185, 255);
     letter-spacing: 1px;
-}
-
-.main .confirmar > * {
-    font-size: 1.5rem;
-    color: var(--txt-contrast-blue);
 }

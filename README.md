@@ -4,17 +4,15 @@ Dentro de um pedido só cabem UM produto, tem que ser 1 ou vários.
 Inserção de dados automaticamente não está funcionando. -> Usar as funções do
 backend ao invés de fazer requests.
 
-Integrar as rotas do back com o front. Criar um rota a mais para pegar as
-requisições e chamar as funções
+Ajeitar como estão os forms - tem que ter um botão do `type="submit"` para
+enviar os dados do forms. O Cadastro está concluído, porém sem o tratamento de
+erros.
 
-O maluco tirou as rotas de crud, colocando elas em uma pasta SERVICE e chamou o
-arquivo de CRUD.py, chamando eles pelas funções com as rotas do FORMS
+
+    - Refomular projeto para que os RAISE EXCEPTIONS não passem desapercebidos.
 
 # Ideias
-Colocar valores de usuário, produtos e pedidos válidos em um JSON para rodar de
-uma vez e trabalhar com as requisições. -> Tentando
 
-Testes;
 
 # Projeto Final
 

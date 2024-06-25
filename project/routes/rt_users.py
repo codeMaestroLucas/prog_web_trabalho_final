@@ -10,21 +10,43 @@ from ..schemas.sch_users import User as schUser
 from ..database import get_db
 from ..utils.check_if_exists import check_if_exists
 from ..utils.return_formatted_data import return_formatted_data
-
+from ..repositories.rep_user import User as repUser
 
 router = APIRouter(
-    tags= ['User Routes']
+    tags= ['User Routes'],
+    prefix= '/user'
 )
 
-@router.post('/cadastro')
-async def request_create_user(request: Request,
+@router.post('/register', response_class= HTMLResponse)
+async def request_register_user(request: Request,
+                              db: Session =  Depends(get_db),
                               name: str = Form(...),
                               email: str = Form(...),
                               password: str = Form(...)
-                              ):
-    user = schUser(name=name, email=email, password=password)
+                              ) -> RedirectResponse:
+    """Função usada para criar um usuário novo no DB.
+
+    Args:
+        request (Request): Solicitação da página HTML.
+        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
+        name (str, optional): Nome. Defaults to Form(...).
+        email (str, optional): Email. Defaults to Form(...).
+        password (str, optional): Senha. Defaults to Form(...).
+
+    Returns:
+        RedirectResponse: Caso tenha sido criado normalmente o usuário é
+        redirecionado para '/', do contrário ele continua na msm página.
+    """
+
+    try:
+        repUser(db).create_user(name, email, password)
+
+    except Exception as e:
+        print(e)
+        RedirectResponse(url= '/register', status_code= 303)
+        
+    return RedirectResponse(url='/', status_code= 303)
     
-    return RedirectResponse(url= "/users/create"), create_user(user, request)
 
 
 @router.post("/users/create", response_model=schUser)

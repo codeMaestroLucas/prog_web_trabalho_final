@@ -10,16 +10,17 @@
 {% block body %}
 
 <main class="main">
-    <h1 class="title comfortaa-700">Nova Senha<span class="span">.</span></h1>
-    <form action="/users/create" method="post" class="form_login">
+    <h1 class="title comfortaa-700">Cadastro<span class="span">.</span></h1>
+
+    <form action="user/register" method="post" class="form_login">
         <input type="text" name="name" id="name" placeholder="Nome" class="input ">
 
         <input type="text" name="email" id="email" placeholder="Email" class="input ">
 
         <input type="password" name="password" id="password" placeholder="Senha" class="input">
 
-        <button class= "confirmar">
-            <a href="/" class= "raleway-900">Confirmar</a>
+        <button type="submit" class= "confirmar raleway-900">
+                    Confirmar
         </button>
 
     </form>

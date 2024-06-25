@@ -70,7 +70,7 @@ def check_if_exists(
     Raises:
         HTTPException: Caso o objeto não exista no DB.
     """
-    name_to_check, fields_to_check, table_to_check = _verify_instance(to_check,object_to_check)
+    name_to_check, fields_to_check, table_to_check = _verify_instance(to_check, object_to_check)
 
     conditions: List[str] = []
     try:
