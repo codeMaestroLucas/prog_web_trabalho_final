@@ -1,4 +1,5 @@
 from fastapi import Depends, Request, Form, APIRouter
+from fastapi.responses import RedirectResponse
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from ..models.mod_products import Product as modProduct
@@ -6,6 +7,7 @@ from ..schemas.sch_products import Product as schProduct
 from ..database import get_db
 from ..utils.check_if_exists import check_if_exists
 from ..utils.return_formatted_data import return_formatted_data
+from dataclasses import dataclass
 
 router = APIRouter(
     tags= ['Product Routes']
@@ -37,10 +39,14 @@ router = APIRouter(
 #     )
 #     return product
 
-
+@dataclass
+class produto_input():
+    name: str  = Form(...)
+    price: float = Form(...)
+    in_stock: int = Form(...)
 
 @router.post("/products/create", response_model= schProduct)
-def create_product(product: schProduct,
+def create_product(product: produto_input = Depends(),
                    db: Session = Depends(get_db)) -> modProduct:
     """Função usada para criar um novo produto.
 
@@ -63,7 +69,7 @@ def create_product(product: schProduct,
     db.commit()
     db.refresh(db_product)
 
-    return db_product
+    return RedirectResponse("/home", status_code=303)
 
 
 @router.get("/products/read/{product_id}")

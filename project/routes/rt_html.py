@@ -44,3 +44,9 @@ async def home(request: Request, db: Session = Depends(get_db)):
         "orders": formatted_orders,
         "margin_top": margin_top
     })
+
+@router.get("/cadastro_produto", response_class= HTMLResponse)
+async def cadastro_prod(request: Request):
+    return templates.TemplateResponse(
+        "cadastro_produto.html", {"request": request}
+        )
