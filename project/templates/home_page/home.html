@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='home_page/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/home_page/pop_ups.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/home_page/delete.css') }}">
+
+<link rel="shortcut icon" href="../../static/imgs/fav-icons/fav-order.png" type="image/x-icon">
+
+
+<title>Home</title>
+{% endblock %}
+
+{% block body %}
+<button class="ic_sair">
+    <a href="/">
+        <img src="../static/imgs/login-imgs/ic_sair.png" class="ic_sair" alt="Icone Sair">
+    </a>
+</button>
+<main class="main" style="margin-top: {{ margin_top }}px">
+
+    <div class="list_of_products">
+        <div class="info">
+            <h1 class="title comfortaa-700">Controle de Estoque<span>.</span></h1>
+            <button class="btn create create-product">
+                <p class="raleway-400">
+                    <img src="../static/imgs/login-imgs/ic_criar.png" alt="create_icon" class="create_icon">
+                    Novo Produto
+                </p>
+            </button>
+        </div>
+
+        {% if products %}
+        {% for product in products %}
+        <div class="content products">
+            <div class="product_data">
+                <ul class="datas">
+                    <li class="prod_data id m-plus-rounded-1c-regular" style="display: none">{{ product.id }}</li>
+                    <li class="prod_data name m-plus-rounded-1c-regular">{{ product.name }}</li>
+                </ul>
+                <ul class="side_data">
+                    <li class="prod_data price m-plus-rounded-1c-regular">{{ product.price }}</li>
+                    <li class="prod_data in_stock m-plus-rounded-1c-regular">Em Estoque: {{ product.in_stock }}</li>
+                </ul>
+            </div>
+
+            <div class="other_tools">
+                <button class="btn update update-product">
+                    <p  class="raleway-400">
+                        <img src="../static/imgs/login-imgs/ic_editar.png" alt="edit_icon" class="edit_icon">
+                        Editar
+                    </p>
+                </button>
+
+                <button class="btn delete delete-product">
+                    <p class="raleway-400 btn">
+                        <img src="../static/imgs/login-imgs/ic_remover.png" alt="delete_icon" class="delete_icon">
+                        Excluir
+                    </p>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="list_of_orders">
+        <div class="info">
+            <h1 class="title comfortaa-700">Controle de Pedidos<span>.</span></h1>
+            <button class="btn create create-order">
+                <p class="raleway-400">
+                    <img src="../static/imgs/login-imgs/ic_criar.png" alt="create_icon" class="create_icon">
+                    Novo Pedido
+                </p>
+            </button>
+        </div>
+
+        {% if orders %}
+        {% for order in orders %}
+        <div class="orders">
+            <div class="order_data">
+                <div class="first_info">
+                    <ul class="datas">
+                        <li class="order_data id m-plus-rounded-1c-regular">{{ order.id }}.</li>
+                    </ul>
+                    <ul class="primary_side_data">
+                        <li class="order_data user_name m-plus-rounded-1c-regular">Usuário: {{ order.user_name }}</li>
+                        <li class="order_data product_name m-plus-rounded-1c-regular">Produto: {{ order.product_name }}</li>
+                    </ul>
+                </div>
+                <ul class="other_data">
+                    <li class="ord_data product_unitary_price m-plus-rounded-1c-regular">Valor Unitário: {{ order.product_unitary_price }}</li>
+                    <li class="ord_data quantity m-plus-rounded-1c-regular">Quantidade: {{ order.product_quantity }}</li>
+                    <li class="ord_data total_value m-plus-rounded-1c-regular">Valor Total: <span class="cash_span">{{ order.total_value }}</span></li>
+                </ul>
+            </div>
+
+            <div class="other_tools">
+                <button class="btn update update-order">
+                    <p class="raleway-400">
+                        <img src="../static/imgs/login-imgs/ic_editar.png" alt="edit_icon" class="edit_icon">
+                        Editar
+                    </p>
+                </button>
+
+                <button class="btn delete delete-order">
+                    <p class="raleway-400 btn">
+                        <img src="../static/imgs/login-imgs/ic_remover.png" alt="delete_icon" class="delete_icon">
+                        Excluir
+                    </p>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+{% block pop_ups %}
+
+{% include "/home_page/home_pop_ups/create.html" %}
+{% include "/home_page/home_pop_ups/update.html" %}
+{% include "/home_page/home_pop_ups/delete.html" %}
+
+
+{% endblock %}
+
+</main>
+{% endblock %}
+
+{% block script %}
+<script>
+    // CREATE
+    document.addEventListener('DOMContentLoaded', function() {
+        const createProductButton = document.querySelector('.create-product');
+        const createOrderButton = document.querySelector('.create-order');
+        const productContainer = document.querySelector('.container.create_products');
+        const orderContainer = document.querySelector('.container.create_orders');
+
+        if (createProductButton && productContainer) {
+            createProductButton.addEventListener('click', function() {
+                productContainer.classList.remove('not-visible');
+                productContainer.classList.add('visible');
+            });
+        }
+
+        if (createOrderButton && orderContainer) {
+            createOrderButton.addEventListener('click', function() {
+                orderContainer.classList.remove('not-visible');
+                orderContainer.classList.add('visible');
+            });
+        }
+
+        const closeButtons = document.querySelectorAll('.btn-close');
+
+        if (closeButtons.length > 0) {
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const container = this.closest('.container');
+                    if (container) {
+                        container.classList.remove('visible');
+                        container.classList.add('not-visible');
+                    }
+                });
+            });
+        }
+    });
+    // ENDCREATE
+    
+
+    //UPDATE
+    document.addEventListener('DOMContentLoaded', function() {
+        const updateProductButton = document.querySelectorAll('.update-product');
+        const updateOrderButton = document.querySelectorAll('.update-order');
+        const productContainer = document.querySelector('.container.update_products');
+        const orderContainer = document.querySelector('.container.update_orders');
+
+        if (updateProductButton.length > 0 && productContainer) {
+            updateProductButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    productContainer.classList.remove('not-visible');
+                    productContainer.classList.add('visible');
+                });
+            });
+        }
+
+        if (updateOrderButton.length > 0 && orderContainer) {
+            updateOrderButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    orderContainer.classList.remove('not-visible');
+                    orderContainer.classList.add('visible');
+                });
+            });
+        }
+
+        const closeButtons = document.querySelectorAll('.btn-close');
+
+        if (closeButtons.length > 0) {
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const container = this.closest('.container');
+                    if (container) {
+                        container.classList.remove('visible');
+                        container.classList.add('not-visible');
+                    }
+                });
+            });
+        }
+
+        const updateButtons = document.querySelectorAll('.btn.update');
+
+        if (updateButtons.length > 0) {
+            updateButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    let id = '';
+
+                    if (button.classList.contains('update-product')) {
+                        id = document.querySelector('.prod_data.id').textContent.trim();
+                    } else if (button.classList.contains('update-order')) {
+                        id = document.querySelector('.order_data.total_value').textContent.trim();
+                    }
+                });
+            });
+        }
+    });
+    // ENDUPDATE
+
+
+    // DELETE
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteProductButton = document.querySelectorAll('.delete-product');
+        const deleteOrderButton = document.querySelectorAll('.delete-order');
+        const productContainer = document.querySelector('.container.delete_products');
+        const orderContainer = document.querySelector('.container.delete_orders');
+
+        if (deleteProductButton.length > 0 && productContainer) {
+            deleteProductButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    productContainer.classList.remove('not-visible');
+                    productContainer.classList.add('visible');
+                });
+            });
+        }
+
+        if (deleteOrderButton.length > 0 && orderContainer) {
+            deleteOrderButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    orderContainer.classList.remove('not-visible');
+                    orderContainer.classList.add('visible');
+                });
+            });
+        }
+
+        const closeButtons = document.querySelectorAll('.btn-close');
+
+        if (closeButtons.length > 0) {
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const container = this.closest('.container');
+                    if (container) {
+                        container.classList.remove('visible');
+                        container.classList.add('not-visible');
+                    }
+                });
+            });
+        }
+
+        const updateButtons = document.querySelectorAll('.btn.update');
+
+        if (updateButtons.length > 0) {
+            updateButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    let id = '';
+
+                    if (button.classList.contains('update-product')) {
+                        id = document.querySelector('.prod_data.id').textContent.trim();
+                    } else if (button.classList.contains('update-order')) {
+                        id = document.querySelector('.order_data.total_value').textContent.trim();
+                    }
+                });
+            });
+        }
+    });
+    // ENDDELETE
+</script>
+{% endblock %}

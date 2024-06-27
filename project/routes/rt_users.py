@@ -1,7 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from pydantic import ValidationError
-from typing import Union
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -10,49 +7,16 @@ from ..schemas.sch_users import User as schUser
 from ..database import get_db
 from ..utils.check_if_exists import check_if_exists
 from ..utils.return_formatted_data import return_formatted_data
-from ..repositories.rep_user import User as repUser
 
 router = APIRouter(
     tags= ['User Routes'],
-    prefix= '/user'
+    prefix= '/users'
 )
 
-@router.post('/register', response_class= HTMLResponse)
-async def request_register_user(request: Request,
-                              db: Session =  Depends(get_db),
-                              name: str = Form(...),
-                              email: str = Form(...),
-                              password: str = Form(...)
-                              ) -> RedirectResponse:
-    """Função usada para criar um usuário novo no DB.
 
-    Args:
-        request (Request): Solicitação da página HTML.
-        db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
-        name (str, optional): Nome. Defaults to Form(...).
-        email (str, optional): Email. Defaults to Form(...).
-        password (str, optional): Senha. Defaults to Form(...).
-
-    Returns:
-        RedirectResponse: Caso tenha sido criado normalmente o usuário é
-        redirecionado para '/', do contrário ele continua na msm página.
-    """
-
-    try:
-        repUser(db).create_user(name, email, password)
-
-    except Exception as e:
-        print(e)
-        RedirectResponse(url= '/register', status_code= 303)
-        
-    return RedirectResponse(url='/', status_code= 303)
-    
-
-
-@router.post("/users/create", response_model=schUser)
+@router.post("/create")
 def create_user(user: schUser,
-                      db: Session = Depends(get_db)
-                      ) -> modUser:
+                db: Session = Depends(get_db)) -> dict:
     """Função usada para criar um novo usuário.
 
     Args:
@@ -60,34 +24,31 @@ def create_user(user: schUser,
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        modUser: Retorna o usuario criado.
+        dict: O usuário criado.
     """
     try:
         db_user = modUser(name= user.name,
                           email= user.email,
-                          password= user.password)
+                          password= user.password
+                          )
         
+
         check_if_exists('users', db_user, db, invert= True)
         
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
     
-        return db_user
+        return return_formatted_data(db_user, db)
     
     except IntegrityError:
         db.rollback()
-        return {"message": "Email em uso."}
-    
-    # except ValidationError as e:
-    #     errors = e.errors()
-    #     error_messages = [error['msg'] for error in errors]
-    #     return {"errors": error_messages}
+        raise HTTPException(status_code= 400, detail= "Email em uso.")
     
 
-@router.get("/users/read/{user_id}")
+@router.get("/{user_id}")
 def read_user(user_id: int,
-             db: Session = Depends(get_db)) -> dict:
+              db: Session = Depends(get_db)) -> dict:
     """Função que retorna um usuário criado baseado no ID.
 
     Args:
@@ -98,7 +59,7 @@ def read_user(user_id: int,
         HTTPException: Caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
-        modUser: Usuário correspondente ao ID solicitado.
+        dict: Usuário correspondente ao ID solicitado.
     """
     db_query = select(modUser).where(modUser.id == user_id)
     user_to_get = db.execute(db_query).scalars().first()
@@ -108,10 +69,10 @@ def read_user(user_id: int,
     return return_formatted_data(user_to_get, db)
 
 
-@router.put('/users/update/{user_id}', response_model= schUser)
+@router.put('/{user_id}')
 def update_user(user_id: int,
                 user: schUser,
-                db: Session = Depends(get_db)) -> modUser:
+                db: Session = Depends(get_db)) -> dict:
     """Função usada para atualizar um usuário basedo no ID.
 
     Args:
@@ -123,7 +84,7 @@ def update_user(user_id: int,
         HTTPException: Caso o novo email já esteja em uso por outro usuário.
 
     Returns:
-        modUser: Usuário atualizado.
+        dict: Usuário atualizado.
     """
     
     db_query = select(modUser).where(modUser.id == user_id)
@@ -141,15 +102,15 @@ def update_user(user_id: int,
         db.execute(stmt)
         db.commit()
 
-        updated_user = db.query(modUser).filter(modUser.id == user_id).first()
-        return updated_user
+        return return_formatted_data(user_to_update, db)
 
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code= 400, detail= "Endereço de email já está em uso.")
+        raise HTTPException(status_code= 400,
+                            detail= "Endereço de email já está em uso.")
 
 
-@router.delete('/user/delete/{user_id}')
+@router.delete('/{user_id}')
 def delete_user(user_id: int,
                 db: Session = Depends(get_db)) -> dict:
     """Função usada para deletar um usuário baseado no ID.

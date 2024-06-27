@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 class Order(Base):
     """Classe de Pedidos.
     
-    Estabelece uma estrutura que será usada no Banco de Dados.
+    Estabelece uma estrutura de tabela que será usada no DB.
     """
     __tablename__ = 'orders'
     

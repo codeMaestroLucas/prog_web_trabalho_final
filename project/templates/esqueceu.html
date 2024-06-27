@@ -2,6 +2,7 @@
 
 {% block head %}
     <link rel="stylesheet" href=" {{ url_for ('static', path='esqueceu.css') }} ">
+    <link rel="shortcut icon" href="../static/imgs/fav-icons/fav-forgot.png" type="image/x-icon">
 
     <title>Esqueceu senha</title>
 {% endblock %}
@@ -11,17 +12,18 @@
     
 <main class="main">
     <h1 class="title comfortaa-700">Nova Senha<span class="span">.</span></h1>
-    <form action="/users/update/{user_id}" method="post" class="form_login">
+    <form action="user/update" method="post" class="form_login">
         <input type="text" name="email" id="email" placeholder="Email" class="input ">
 
-        <input type="password" name="senha" id="senha" placeholder="Nova Senha" class="input ">
+        <input type="password" name="senha" id="password_1" placeholder="Nova Senha" class="input ">
 
-        <input type="password" name="senha" id="senha" placeholder="Repita a Senha" class="input ">
+        <input type="password" name="senha" id="password_2" placeholder="Repita a Senha" class="input ">
+    
+        <button type="submit" class= "confirmar raleway-900">
+            Confirmar
+        </button>
     </form>
 
-    <button class= "confirmar">
-        <a href="/" class= "raleway-900">Confirmar</a>
-    </button>
 </main>
 
 {% endblock %}

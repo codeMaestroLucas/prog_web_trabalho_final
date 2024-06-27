@@ -14,39 +14,66 @@ router = APIRouter(
 templates = Jinja2Templates(directory= 'project/templates')
 
 @router.get("/", response_class= HTMLResponse)
-async def login(request: Request):
+async def login(request: Request) -> HTMLResponse:
+    """Renderiza o "login.html" ao ser solicitado.
+
+    Args:
+        request (Request): Solicitação.
+
+    Returns:
+        HTMLResponse: Página de login.
+    """
     return templates.TemplateResponse(
         "login.html", {"request": request}
         )
 
 @router.get("/esqueceu", response_class= HTMLResponse)
-async def esqueceu_senha(request: Request):
+async def esqueceu_senha(request: Request) -> HTMLResponse:
+    """Renderiza o "esquece.html" ao ser solicitado.
+
+    Args:
+        request (Request): Solicitação.
+
+    Returns:
+        HTMLResponse: Página de "esqueceu a senha".
+    """
     return templates.TemplateResponse(
         "esqueceu.html", {"request": request}
         )
 
 @router.get("/cadastro", response_class= HTMLResponse)
-async def cadastro(request: Request):
+async def cadastro(request: Request) -> HTMLResponse:
+    """Renderiza o "cadastro.html" ao ser solicitado.
+
+    Args:
+        request (Request): Solicitação.
+
+    Returns:
+        HTMLResponse: Página de cadastro.
+    """
     return templates.TemplateResponse(
         "cadastro.html", {"request": request}
         )
 
 @router.get("/home", response_class= HTMLResponse)
-async def home(request: Request, db: Session = Depends(get_db)):
+async def home(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
+    """Renderiza o "cadastro.html" ao ser solicitado.
+
+    Args:
+        request (Request): Solicitação
+        db (Session, optional): Conxão com o DB. Defaults to Depends(get_db).
+
+    Returns:
+        HTMLResponse: Página home.
+    """
     formatted_products, formatted_orders = html_formatted(db)
 
     margin_top = (len(formatted_products) + len(formatted_orders)) * 100
     # Única maneira que achei de deixar responsivo. Será passada no style do main
 
-    return templates.TemplateResponse("home.html", {
+    return templates.TemplateResponse("home_page/home.html", {
         "request": request,
         "products": formatted_products,
         "orders": formatted_orders,
         "margin_top": margin_top
     })
-
-@router.get("/cadastro_produto", response_class= HTMLResponse)
-async def cadastro_prod(request: Request):
-    return templates.TemplateResponse(
-        "cadastro_produto.html", {"request": request}
-        )

@@ -1,0 +1,46 @@
+{% block pop_ups %}
+
+<!-- Contêiner de Adição de Produto -->
+<div class="container create_products not-visible">
+    <div class="add_product">
+        <button class="btn-close">
+            <img src="../static/imgs/login-imgs/ic_criar.png" alt="Close Icon">
+        </button>
+
+        <h1 class="title comfortaa-700">Adicionar Produto<span class="span">.</span></h1>
+
+        <form action="" method="post">
+            <input type="text" id="name" class="input" placeholder="Nome">
+
+            <input type="text" id="price" class="input" placeholder="Preço">
+
+            <input type="text" id="in_stock" class="input" placeholder="Quantidade em estoque">
+
+            <button type="submit" class="btn add raleway-700">Adicionar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Contêiner de Adição de Pedido -->
+<div class="container create_orders not-visible">
+    <div class="add_order">
+        <button class="btn-close">
+            <img src="../static/imgs/login-imgs/ic_criar.png" alt="Close Icon">
+        </button>
+        
+        <h1 class="title comfortaa-700">Adicionar Pedido<span class="span">.</span></h1>
+        
+        <form action="" method="post">
+            <input type="text" id="user_id" class="input" placeholder="ID Usuário">
+
+            <input type="text" id="product_id" class="input" placeholder="ID Produto">
+
+            <input type="text" id="quantity" class="input" placeholder="Quantidade">
+
+            <button type="submit" class="btn add raleway-700">Adicionar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

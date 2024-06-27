@@ -4,14 +4,10 @@ Dentro de um pedido só cabem UM produto, tem que ser 1 ou vários.
 Inserção de dados automaticamente não está funcionando. -> Usar as funções do
 backend ao invés de fazer requests.
 
-Ajeitar como estão os forms - tem que ter um botão do `type="submit"` para
-enviar os dados do forms. O Cadastro está concluído, porém sem o tratamento de
-erros.
-
+Os erros nas funções estão impedindo o cadastramento, porém esses erros não
+ficam visíveis no Front.
 
     - Refomular projeto para que os RAISE EXCEPTIONS não passem desapercebidos.
-
-# Ideias
 
 
 # Projeto Final
@@ -28,7 +24,8 @@ erros.
 
 # Preparando o ambiente
 
-Este é um projeto que usa FastAPI, SQLAlchemy, e SQLite para criar uma aplicação web básica.
+Este é um projeto que usa FastAPI, SQLAlchemy, e SQLite para criar uma aplicação
+web básica de gerenciamento de estoque.
 
 ## Pré-requisitos
 
@@ -55,7 +52,7 @@ Este é um projeto que usa FastAPI, SQLAlchemy, e SQLite para criar uma aplicaç
 
     Isso pode levar alguns segundos.
 
-4. Se não já tiver a imagem, Inicie container:
+4. Se não já tiver a imagem, inicie o container:
     ```powershell
     docker composer up --build
     ```
@@ -90,16 +87,23 @@ ou realizar o comando `docker compose down`
 
 - **Project:** diretório que contém os arquivos relacionados com todo o Backend
 e Frontend da aplicação;
+
     - **Insert Data:** diretório que contém os dados para serem inseridos
 automaticamente no DB.
+
     - **Models:** diretório que contém as classes estruturadas para o formato de
 banco de dados no SQLAlchemy;
+
     - **Routes:** diretório que contém as rotas (endpoints) que serão usadas no
 FastAPI;
+
     - **Schemas:** diretório que contém os esquemas de dados para validação e
 serialização usando Pydantic.
+
     - **Static:** contém os arquivos estáticos - podendo ser JavaScript, CSS e
 imagens - que serão enviados para o cliente;
+
     - **Templates:** contém os templates em HTML que serão renderizados pelo
 FastAPI para criar páginas web;
+
     - **Util:** contém funções que são úteis para outras partes do programa.

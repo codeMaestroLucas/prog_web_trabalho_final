@@ -1,0 +1,106 @@
+.container {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Adiciona um z-index alto para garantir que o container fique acima de outros elementos */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    width: 100vw;
+
+    margin: 0;
+    padding: 10px 5px;
+
+    background-color: rgba(79, 79, 79, 0.913);
+    overflow-x: hidden;
+}
+
+.container > * {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: 15px 5px;
+    padding: 8px 23px;
+
+    width: 30vw;
+    
+    border-radius: 10px;
+    font-size: 1.1rem;
+    color: var(--txt-std-color);
+    
+    background: var(--bg-color);  /* fallback for old browsers */
+}
+
+
+.container .title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.container .input {
+    margin: 15px 5px;
+    padding: 8px 23px;
+
+    width: 80%;
+    height: 3rem;
+    
+    border-radius: 10px;
+    font-size: 1.1rem;
+    color: var(--txt-std-color);
+    
+    background: #C9D6FF;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #E2E2E2, f1f1f100);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #E2E2E2, #f1f1f100); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.container .input::placeholder {
+    color: rgb(138, 127, 127);
+}
+
+.container .btn.add {
+    letter-spacing: 2px;
+    margin: 20px 0  10px 29%;
+
+    font-size: 1.3rem;
+    color: var(--txt-std-color);
+    
+    width: 40%;
+    height: 4rem;
+
+    background-color: rgb(174, 252, 174);
+
+    border-radius: 10px 40px 8px 40px;
+    transition: 0.3s ease-in-out;
+}
+
+.container .btn.add:hover {
+    background-color: rgb(13, 209, 13);
+    letter-spacing: 0px;
+}
+
+
+.container .btn-close {
+    height: 25px;
+    background: none;
+
+    transform: scale(1.2) rotate(45deg);
+    
+    position: relative;
+    top: 5px;
+    left: 49%;
+}
+
+
+.not-visible {
+    display: none;
+}
+
+.visible {
+    display: flex;
+}

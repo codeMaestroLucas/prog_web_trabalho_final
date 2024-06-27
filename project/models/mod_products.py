@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer, Float
 class Product(Base):
     """Classe de Produtos.
     
-    Estabelece uma estrutura que será usada no Banco de Dados.
+    Estabelece uma estrutura de tabela que será usada no DB.
     """
     __tablename__ = 'products'
     

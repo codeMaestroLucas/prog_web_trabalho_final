@@ -1,0 +1,40 @@
+{% block pop_ups %}
+
+<!-- Contêiner de Deleção de Produto -->
+<div class="container not-visible delete_products">
+    <div class="delete_product">
+        <button class="btn-close">
+            <img src="../static/imgs/login-imgs/ic_criar.png" alt="Close Icon">
+        </button>
+
+        <h1 class="title comfortaa-700">Deseja excluir o produto<span class="span">?</span></h1>
+
+        <form action="" method="post">
+            <div class="awnser">
+                <button class="btn accept-deletion" type="submit">Sim</button>
+                
+                <button class="btn deny-deletion">Não</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Contêiner de Deleção de Pedido -->
+<div class="container not-visible delete_orders">
+    <div class="delete_order">
+        <button class="btn-close">
+            <img src="../static/imgs/login-imgs/ic_criar.png" alt="Close Icon">
+        </button>
+
+        <h1 class="title comfortaa-700">Deseja excluir o pedido<span class="span">?</span></h1>
+
+        <form action="" method="post">
+            <div class="awnser">
+                <button class="btn accept-deletion" type="submit">Sim</button>
+                
+                <button class="btn deny-deletion">Não</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

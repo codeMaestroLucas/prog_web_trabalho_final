@@ -19,10 +19,10 @@ body {
 
 .main {
     margin: 20px;
-    padding: 30px 20px;
+    padding: 23px 20px;
 
-    width: 30vw;
-    height: 75vh;
+    width: 32vw;
+    height: 80vh;
     background-color: var(--card-bg-color);
     border-radius: 7px;
 }
@@ -79,7 +79,6 @@ body {
     background-color: rgb(232, 240, 254);
     border-radius: 10px 40px 8px 40px;
     transition: 0.3s ease-in-out;
-    cursor: pointer;
 }
 
 .main .form_login .entrar:hover {

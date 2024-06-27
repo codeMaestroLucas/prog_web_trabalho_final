@@ -3,8 +3,8 @@ from sqlalchemy import Column, Integer, String
 
 class User(Base):
     """Classe de Usuário.
-    
-    Estabelece uma estrutura que será usada no Banco de Dados.
+
+    Estabelece uma estrutura de tabela que será usada no DB.
     """
     __tablename__ = 'users'
     

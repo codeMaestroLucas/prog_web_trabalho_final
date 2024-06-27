@@ -11,7 +11,8 @@ from ..utils.return_formatted_data import return_formatted_data
 from ..utils.verify_quantity import verify_quantity
 
 router = APIRouter(
-    tags= ['Order Routes']
+    tags= ['Order Routes'],
+    prefix= '/orders'
 )
 
 def check_if_order_exists(db_order: modOrder,
@@ -38,9 +39,9 @@ def check_if_order_exists(db_order: modOrder,
     check_if_exists('product', db_product, db)
 
 
-@router.post("/orders/create/", response_model= schOrder)
+@router.post("/")
 def create_order(order: schOrder,
-                db: Session = Depends(get_db)) -> modOrder:
+                 db: Session = Depends(get_db)) -> dict:
     """Função usada para criar um novo pedido.
 
     Args:
@@ -48,10 +49,9 @@ def create_order(order: schOrder,
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        modOrder: O pedido criado.
+        dict: O pedido criado.
     """
-    db_order = modOrder(
-                        user_id= order.user_id,
+    db_order = modOrder(user_id= order.user_id,
                         product_id= order.product_id,
                         quantity= verify_quantity(order, order.quantity, db),
                         )
@@ -61,12 +61,12 @@ def create_order(order: schOrder,
     db.commit()
     db.refresh(db_order)
 
-    return db_order
+    return return_formatted_data(db_order, db)
 
 
-@router.get("/orders/read/{order_id}")
+@router.get("/{order_id}")
 def read_order(order_id: int,
-             db: Session = Depends(get_db)):
+               db: Session = Depends(get_db)) -> dict:
     """Função que retorna um pedido criado baseado no ID.
 
     Args:
@@ -77,7 +77,7 @@ def read_order(order_id: int,
         HTTPException: Caso não haja um ID correspondente ao que foi solicitado.
 
     Returns:
-        modOrder: Pedido correspondente ao ID solicitado.
+        dict: Pedido correspondente ao ID solicitado.
     """
     db_query = select(modOrder).where(modOrder.id == order_id)
     order_to_get = db.execute(db_query).scalars().first()
@@ -87,10 +87,10 @@ def read_order(order_id: int,
     return return_formatted_data(order_to_get, db)
 
 
-@router.put('/orders/update/{order_id}', response_model= schOrder)
+@router.put('/{order_id}')
 def update_order(order_id: int,
                 order: schOrder,
-                db: Session = Depends(get_db)) -> modOrder:
+                db: Session = Depends(get_db)) -> dict:
     """Função usada para atualizar um pedido basedo no ID.
 
     Args:
@@ -99,15 +99,16 @@ def update_order(order_id: int,
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        modOrder: Pedido atualizado.
+        dict: Pedido atualizado.
     """
     db_query = select(modOrder).where(modOrder.id == order_id)
-    old_order = db.execute(db_query).scalars().first()
+    order_to_update = db.execute(db_query).scalars().first()
     
-    check_if_order_exists(old_order, db)
+    check_if_order_exists('order', order_to_update, db)
     
-    quantity_to_remove = order.quantity - old_order.quantity
-    verify_quantity(old_order, quantity_to_remove, db)
+    quantity_to_remove = order.quantity - order_to_update.quantity
+    verify_quantity(order_to_update, quantity_to_remove, db)
+    
     
     stmt = update(modOrder).where(modOrder.id == order_id).values(
         user_id= order.user_id,
@@ -115,20 +116,19 @@ def update_order(order_id: int,
         quantity= order.quantity
     )
 
-    new_order = modOrder(
-                    user_id= order.user_id,
-                    product_id= order.product_id,
-                    quantity= verify_quantity(order, order.quantity, db),
+    new_order = modOrder(user_id= order.user_id,
+                         product_id= order.product_id,
+                         quantity= verify_quantity(order, order.quantity, db),
                     )
     check_if_order_exists(new_order, db, invert= True)
 
     db.execute(stmt)
     db.commit()
 
-    return new_order
+    return return_formatted_data(order_to_update, db)
 
 
-@router.delete('/order/delete/{order_id}')
+@router.delete('/{order_id}')
 def delete_order(order_id: int,
                 db: Session = Depends(get_db)) -> dict:
     """Função usada para deletar um pedido baseado no ID.

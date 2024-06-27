@@ -1,0 +1,44 @@
+{% block pop_ups %}
+
+<!-- Contêiner de Atualização de Produto -->
+<div class="container update_products not-visible">
+    <div class="update_product">
+        <button class="btn-close">
+            <img src="../static/imgs/login-imgs/ic_criar.png" alt="Close Icon">
+        </button>
+
+        <h1 class="title comfortaa-700">Atualizar Produto<span class="span">.</span></h1>
+
+        <form action="" id="update_form_product" method="post">
+            <input type="text" id="name" class="input" placeholder="Nome">
+
+            <input type="text" id="price" class="input" placeholder="Preço">
+
+            <input type="text" id="in_stock" class="input" placeholder="Quantidade em estoque">
+
+            <button type="submit" class="btn add raleway-700" id="btn_submit_update_products">Atualizar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Contêiner de Atualização de Pedido -->
+<div class="container update_orders not-visible">
+    <div class="update_order">
+        <button class="btn-close">
+            <img src="../static/imgs/login-imgs/ic_criar.png" alt="Close Icon">
+        </button>
+
+        <h1 class="title comfortaa-700">Atualizar Pedido<span class="span">.</span></h1>
+        
+        <form action="" id="update_form_order" method="post">
+            <input type="text" id="user_id" class="input" placeholder="ID Usuário">
+
+            <input type="text" id="product_id" class="input" placeholder="ID Produto">
+
+            <input type="text" id="quantity" class="input" placeholder="Quantidade">
+
+            <button type="submit" class="btn add raleway-700" id="btn_submit_update_orders">Atualizar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

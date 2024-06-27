@@ -22,3 +22,7 @@ ul {
 input {
     outline: none;
 }
+
+button:hover {
+    cursor: pointer;
+}

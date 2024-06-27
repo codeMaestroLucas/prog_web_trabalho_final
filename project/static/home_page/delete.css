@@ -1,0 +1,40 @@
+.container .delete_product,
+.container .delete_order {
+    width: 33rem;
+    height: 10rem;
+
+}
+
+.container .delete_product .span,
+.container .delete_order .span {
+    font-size: 3rem;
+}
+
+.container .delete_product .awnser,
+.container .delete_order .awnser {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.container .delete_product .awnser .btn,
+.container .delete_order .awnser .btn {
+    height: 2.5rem;
+    font-size: 1.5rem;
+}
+
+.btn.accept-deletion {
+    background-color: rgb(174, 252, 174);
+}
+
+.btn.accept-deletion:hover {
+    background-color: rgb(13, 209, 13);
+}
+
+.btn.deny-deletion {
+    background-color: rgb(245, 195, 195);
+}
+
+.btn.deny-deletion:hover {
+    background-color: rgb(224, 96, 96);
+}

@@ -58,7 +58,7 @@ class Product(BaseModel):
         if price <= 0:
             raise ValueError("O preço do produto não pode ser menor ou igual a 0.")
         
-        return round(price, 2)
+        return price
     
     @field_validator('in_stock')
     def validade_in_stock(cls, in_stock: int) -> int:

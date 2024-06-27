@@ -1,12 +1,12 @@
 from typing import Union, Tuple, List
+from sqlalchemy import select, and_
+from sqlalchemy.orm import Session
+from fastapi import Depends
+from fastapi.exceptions import HTTPException
 from ..database import get_db
 from ..models.mod_orders import Order as modOrder
 from ..models.mod_products import Product as modProduct
 from ..models.mod_users import User as modUser
-from sqlalchemy.orm import Session
-from fastapi import Depends
-from sqlalchemy import select, and_
-from fastapi.exceptions import HTTPException
 
 
 def _verify_instance(
@@ -28,7 +28,7 @@ def _verify_instance(
     """
     if to_check in 'orders' or isinstance(object_to_check, modOrder):
         name_to_check = 'Pedido'
-        fields_to_check: Tuple[str] = ('user_id', 'product_id', 'quantity',)
+        fields_to_check: Tuple[str] = ('user_id', 'product_id', 'quantity')
         table_to_check = modOrder
         
     elif to_check in 'users' or isinstance(object_to_check, modUser):
@@ -83,16 +83,13 @@ def check_if_exists(
         
         if invert:
             if exists:
-                db.rollback()
                 raise HTTPException(status_code= 400,
                                     detail= f"{name_to_check} já existe.")
         else:
             if not exists:
-                db.rollback()
                 raise HTTPException(status_code= 400,
                                     detail= f"{name_to_check} não existe.")
             
     except AttributeError:
-        db.rollback()
         raise HTTPException(status_code= 400,
                                 detail= f"{name_to_check} não existe.")

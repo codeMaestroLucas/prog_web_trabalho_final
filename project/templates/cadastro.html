@@ -2,6 +2,7 @@
 
 {% block head %}
     <link rel="stylesheet" href=" {{ url_for ('static', path='cadastro.css') }} ">
+    <link rel="shortcut icon" href="../static/imgs/fav-icons/fav-register.png" type="image/x-icon">
 
     <title>Cadastro</title>
 {% endblock %}
@@ -13,9 +14,9 @@
     <h1 class="title comfortaa-700">Cadastro<span class="span">.</span></h1>
 
     <form action="user/register" method="post" class="form_login">
-        <input type="text" name="name" id="name" placeholder="Nome" class="input ">
+        <input type="text" name="name" id="name" placeholder="Nome" class="input">
 
-        <input type="text" name="email" id="email" placeholder="Email" class="input ">
+        <input type="text" name="email" id="email" placeholder="Email" class="input">
 
         <input type="password" name="password" id="password" placeholder="Senha" class="input">
 
