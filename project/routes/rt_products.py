@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
+from fastapi.responses import RedirectResponse
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from ..models.mod_products import Product as modProduct
@@ -6,15 +7,22 @@ from ..schemas.sch_products import Product as schProduct
 from ..database import get_db
 from ..utils.check_if_exists import check_if_exists
 from ..utils.return_formatted_data import return_formatted_data
+from dataclasses import dataclass
+
 
 router = APIRouter(
     tags= ['Products Routes'],
     prefix= '/products'
 )
 
+@dataclass
+class produto_input():
+    name: str  = Form(...)
+    price: float = Form(...)
+    in_stock: int = Form(...)
 
 @router.post("/create")
-def create_product(product: schProduct,
+def create_product(product: produto_input = Depends(),
                    db: Session = Depends(get_db)) -> dict:
     """Função usada para criar um novo produto.
 
@@ -25,11 +33,14 @@ def create_product(product: schProduct,
     Returns:
         dict: O produto criado.
     """
-    db_product = modProduct(
-                            name= product.name,
+    product = schProduct(name= product.name,
+                        price= product.price,
+                        in_stock=  product.in_stock)
+
+
+    db_product = modProduct(name= product.name,
                             price= product.price,
-                            in_stock=  product.in_stock
-                            )
+                            in_stock=  product.in_stock)
     
     check_if_exists('products', db_product, db, invert= True)
 
@@ -37,7 +48,7 @@ def create_product(product: schProduct,
     db.commit()
     db.refresh(db_product)
 
-    return return_formatted_data(db_product, db)
+    return RedirectResponse("/home", status_code=303)
 
 
 @router.get("/{product_id}")

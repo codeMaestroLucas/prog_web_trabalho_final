@@ -33,3 +33,8 @@ app = FastAPI(
 app.mount('/static', StaticFiles(directory= 'project/static'), name= 'static')
 
 add_routes(app)
+
+
+import uvicorn
+
+uvicorn.run(app)
