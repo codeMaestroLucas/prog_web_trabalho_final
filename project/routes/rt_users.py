@@ -29,8 +29,7 @@ def create_user(user: schUser,
     try:
         db_user = modUser(name= user.name,
                           email= user.email,
-                          password= user.password
-                          )
+                          password= user.password)
         
 
         check_if_exists('users', db_user, db, invert= True)

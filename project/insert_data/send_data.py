@@ -1,8 +1,14 @@
+from ..schemas.sch_users import User as schUser
+from ..models.mod_users import User as modUser
+from ..schemas.sch_products import Product as schProduct
+from ..models.mod_products import Product as modProduct
+from ..schemas.sch_orders import Order as schOrder
+from ..models.mod_orders import Order as modOrder
+from ..database import get_db
+from sqlalchemy.orm import Session
 import json
-import requests
-import asyncio
 
-async def send_data(file: str, url: str):
+def send_data(file: str, db: Session):
     """Função usada para enviar os dados armazenados em arquivos JSON para o DB
     automaticamente.
     
@@ -11,24 +17,51 @@ async def send_data(file: str, url: str):
 
     Args:
         file (str): Arquivo JSON que contém os dados.
-        url (str): Url do endpoint que os dados serão enviados.
+        db (Session): Sessão do banco de dados.
     """
-    with open(file, 'r', encoding= 'utf-8') as file:
-        data = json.load(file)
-        for item in data:
-            await asyncio.sleep(1)
-            requests.post(url, json= item)
+    with open(file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        
+        if file.endswith('users.json'):
+            for item in data:
+                user = modUser(name=item['name'],
+                               email=item['email'],
+                               password=item['password'])
+                db.add(user)
+        
+        elif file.endswith('products.json'):
+            for item in data:
+                product = modProduct(name=item['name'],
+                                     price=item['price'],
+                                     in_stock=item['in_stock'])
+                db.add(product)
+        
+        elif file.endswith('orders.json'):
+            for item in data:
+                order = modOrder(user_id=item['user_id'],
+                                 product_id=item['product_id'],
+                                 quantity=item['quantity'])
+                db.add(order)
+        
+        db.commit()
 
-async def insert_data()-> None:
+def insert_data()-> None:
     """Função usada para inserir dados automaticamente no DB.
     """
-    files_and_endpoints: dict = {
-        'users.json': 'http://127.0.0.1:8000/users',
-        'products.json': 'http://127.0.0.1:8000/products',
-        'orders.json': 'http://127.0.0.1:8000/orders'
-    }
 
-    BASE_DIR = r'back\\insert_data\\'
-    for file, endpoint in files_and_endpoints.items():
+    files: list[str] = ['users.json', 'products.json', 'orders.json']
+    
+    BASE_DIR = r'project\\insert_data\\'
+    for file in files:
         file_path = BASE_DIR + file
-        send_data(file_path, endpoint)
+        send_data(file_path)
+        
+def main() -> None:
+    """Function used to run the main code."""
+    
+
+
+
+
+if __name__ == '__main__':
+    main()

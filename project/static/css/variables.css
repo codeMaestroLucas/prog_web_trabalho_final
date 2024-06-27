@@ -1,0 +1,18 @@
+:root {
+    --card-bg-color: rgb(249, 248, 248);
+
+    --bg-color: rgb(241, 241, 241);
+
+    --txt-std-color: rgb(17, 17, 17);
+
+    --txt-contrast-red: rgb(234, 25, 25);
+
+    --txt-contrast-green: rgb(10, 225, 10);
+
+    --txt-contrast-blue: rgb(11, 101, 185);
+
+    --green-blue: rgb(6, 174, 118);
+    
+    --blue-contrast: rgb(7, 111, 196);
+
+}

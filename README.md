@@ -4,10 +4,8 @@ Dentro de um pedido só cabem UM produto, tem que ser 1 ou vários.
 Inserção de dados automaticamente não está funcionando. -> Usar as funções do
 backend ao invés de fazer requests.
 
-Os erros nas funções estão impedindo o cadastramento, porém esses erros não
-ficam visíveis no Front.
-
-    - Refomular projeto para que os RAISE EXCEPTIONS não passem desapercebidos.
+Os erros nas funções estão impedindo o cadastramento de todas as classes, porém
+esses erros não ficam visíveis no Front.
 
 
 # Projeto Final
