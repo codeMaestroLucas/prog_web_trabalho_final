@@ -57,20 +57,20 @@ ou realizar o comando `docker compose down`
 
 ```powershell
 
-├───project
-│   ├───insert_data
+├─── project
+│   ├─── insert_data
 │   │
-│   ├───models
+│   ├─── models
 │   │
-│   ├───routes
+│   ├─── routes
 │   │
-│   ├───schemas
+│   ├─── schemas
 │   │
-│   ├───static
+│   ├─── static
 │   │
-│   ├───templates
+│   ├─── templates
 │   │
-│   ├───utils
+│   ├─── utils
 ```
 
 - **Project:** diretório que contém os arquivos relacionados com todo o Backend
