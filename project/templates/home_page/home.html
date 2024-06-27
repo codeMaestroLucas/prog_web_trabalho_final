@@ -63,6 +63,15 @@
                 </button>
             </div>
         </div>
+
+        {% with product_id= product.id %}
+            {% include "/home_page/home_pop_ups/update.html" %}
+        {% endwith %}
+
+        {% with product_id= product.id %}
+            {% include "/home_page/home_pop_ups/delete.html" %}
+        {% endwith %}
+
         {% endfor %}
         {% endif %}
     </div>
@@ -114,20 +123,22 @@
                 </button>
             </div>
         </div>
+
+        
+        {% with order_id= order.id %}
+            {% include "/home_page/home_pop_ups/update.html" %}
+        {% endwith %}
+
+        {% with order_id= order.id %}
+            {% include "/home_page/home_pop_ups/delete.html" %}
+        {% endwith %}
+
         {% endfor %}
         {% endif %}
     </div>
 
-{% block pop_ups %}
-
 {% include "/home_page/home_pop_ups/create.html" %}
 
-{% include "/home_page/home_pop_ups/update.html" %}
-
-{% include "/home_page/home_pop_ups/delete.html" %}
-
-
-{% endblock %}
 
 </main>
 {% endblock %}

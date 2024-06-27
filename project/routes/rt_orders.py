@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
+from fastapi.responses import RedirectResponse
 from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
+from dataclasses import dataclass
 from ..models.mod_orders import Order as modOrder
 from ..models.mod_products import Product as modProduct
 from ..models.mod_users import User as modUser
@@ -14,6 +16,13 @@ router = APIRouter(
     tags= ['Order Routes'],
     prefix= '/orders'
 )
+
+
+@dataclass
+class order_input():
+    user_id: int  = Form(...)
+    product_id: int = Form(...)
+    quantity: int = Form(...)
 
 def check_if_order_exists(db_order: modOrder,
                           db: Session = Depends(get_db),
@@ -39,18 +48,23 @@ def check_if_order_exists(db_order: modOrder,
     check_if_exists('product', db_product, db)
 
 
-@router.post("/")
-def create_order(order: schOrder,
-                 db: Session = Depends(get_db)) -> dict:
+@router.post("/create")
+def create_order(order: order_input = Depends(),
+                 db: Session = Depends(get_db)) -> RedirectResponse:
     """Função usada para criar um novo pedido.
 
     Args:
-        order (schOrder): Pedido que será criado.
+        order (order_input): Pedido que será criado.
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        dict: O pedido criado.
+        RedirectResponse: para a página home já atualizada.
     """
+    order = schOrder(user_id= order.user_id,
+                     product_id= order.product_id,
+                     quantity= order.quantity,
+    )
+    
     db_order = modOrder(user_id= order.user_id,
                         product_id= order.product_id,
                         quantity= verify_quantity(order, order.quantity, db),
@@ -61,7 +75,7 @@ def create_order(order: schOrder,
     db.commit()
     db.refresh(db_order)
 
-    return return_formatted_data(db_order, db)
+    return RedirectResponse("/home", status_code=303)
 
 
 @router.get("/{order_id}")
@@ -87,19 +101,19 @@ def read_order(order_id: int,
     return return_formatted_data(order_to_get, db)
 
 
-@router.put('/{order_id}')
+@router.put('update/{order_id}')
 def update_order(order_id: int,
-                order: schOrder,
-                db: Session = Depends(get_db)) -> dict:
+                order: order_input,
+                db: Session = Depends(get_db)) -> RedirectResponse:
     """Função usada para atualizar um pedido basedo no ID.
 
     Args:
         order_id (int): ID do pedido que será atualizado.
-        order (schOrder): Novos campos de pedido que serão usados.
+        order (order_input): Novos campos de pedido que serão usados.
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        dict: Pedido atualizado.
+        RedirectResponse: para a página home já atualizada.
     """
     db_query = select(modOrder).where(modOrder.id == order_id)
     order_to_update = db.execute(db_query).scalars().first()
@@ -125,7 +139,7 @@ def update_order(order_id: int,
     db.execute(stmt)
     db.commit()
 
-    return return_formatted_data(order_to_update, db)
+    return RedirectResponse(url='/home', status_code= 303)
 
 
 @router.delete('/{order_id}')

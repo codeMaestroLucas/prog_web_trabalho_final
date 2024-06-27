@@ -77,3 +77,33 @@ async def home(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
         "orders": formatted_orders,
         "margin_top": margin_top
     })
+
+@router.get("/products/create", response_class= HTMLResponse)
+async def create_products(request: Request,
+                          db: Session = Depends(get_db)) -> HTMLResponse:
+    """Renderiza o "create.html" ao ser solicitado.
+
+    Args:
+        request (Request): Solicitação
+        db (Session, optional): Conxão com o DB. Defaults to Depends(get_db).
+
+    Returns:
+        HTMLResponse: Página home.
+    """
+    return templates.TemplateResponse("home_page/home_pop_ups/create.html", {
+        "request": request})
+
+@router.get("/products/update", response_class= HTMLResponse)
+async def create_products(request: Request,
+                          db: Session = Depends(get_db)) -> HTMLResponse:
+    """Renderiza o "update.html" ao ser solicitado.
+
+    Args:
+        request (Request): Solicitação
+        db (Session, optional): Conxão com o DB. Defaults to Depends(get_db).
+
+    Returns:
+        HTMLResponse: Página home.
+    """
+    return templates.TemplateResponse("home_page/home_pop_ups/update.html", {
+        "request": request})

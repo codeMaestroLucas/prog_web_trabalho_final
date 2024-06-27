@@ -1,5 +1,4 @@
 {% block pop_ups %}
-
 <!-- Contêiner de Deleção de Produto -->
 <div class="container not-visible delete_products">
     <div class="delete_product">
@@ -13,7 +12,7 @@
             <div class="awnser">
                 <button class="btn accept-deletion" type="submit">Sim</button>
                 
-                <button class="btn deny-deletion">Não</button>
+                <button class="btn deny-deletion" type="button">Não</button>
             </div>
         </form>
     </div>
@@ -32,9 +31,26 @@
             <div class="awnser">
                 <button class="btn accept-deletion" type="submit">Sim</button>
                 
-                <button class="btn deny-deletion">Não</button>
+                <button class="btn deny-deletion" type="button">Não</button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const denyButtons = document.querySelectorAll('.deny-deletion');
+    
+    denyButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            const container = button.closest('.container');
+            
+            if (container) {
+                container.classList.remove('visible');
+                container.classList.add('not-visible');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

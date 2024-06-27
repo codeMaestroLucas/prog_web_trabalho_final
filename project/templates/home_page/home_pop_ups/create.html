@@ -10,11 +10,12 @@
         <h1 class="title comfortaa-700">Adicionar Produto<span class="span">.</span></h1>
 
         <form action="/products/create" method="post">
-            <input type="text" id="name" class="input" placeholder="Nome">
 
-            <input type="number" id="price" class="input" placeholder="Preço">
+            <input type="text" id="name" name="name" class="input" placeholder="Nome">
 
-            <input type="number" id="in_stock" class="input" placeholder="Quantidade em estoque">
+            <input type="number" step= "0.01" id="price" name="price" class="input" placeholder="Preço">
+
+            <input type="number" id="in_stock" name="in_stock" class="input" placeholder="Quantidade em estoque">
 
             <button type="submit" class="btn add raleway-700">Adicionar</button>
         </form>
@@ -31,11 +32,11 @@
         <h1 class="title comfortaa-700">Adicionar Pedido<span class="span">.</span></h1>
         
         <form action="/orders/create" method="post">
-            <input type="number" id="user_id" class="input" placeholder="ID Usuário">
+            <input type="number" id="user_id" name="user_id" class="input" placeholder="ID Usuário">
 
-            <input type="number" id="product_id" class="input" placeholder="ID Produto">
+            <input type="number" id="product_id" name="product_id" class="input" placeholder="ID Produto">
 
-            <input type="number" id="quantity" class="input" placeholder="Quantidade">
+            <input type="number" id="quantity" name="quantity" class="input" placeholder="Quantidade">
 
             <button type="submit" class="btn add raleway-700">Adicionar</button>
         </form>

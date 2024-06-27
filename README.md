@@ -1,13 +1,3 @@
-# Problemas
-Dentro de um pedido só cabem UM produto, tem que ser 1 ou vários.
-
-Inserção de dados automaticamente não está funcionando. -> Usar as funções do
-backend ao invés de fazer requests.
-
-Os erros nas funções estão impedindo o cadastramento de todas as classes, porém
-esses erros não ficam visíveis no Front.
-
-
 # Projeto Final
 
 <aside>
@@ -17,7 +7,7 @@ esses erros não ficam visíveis no Front.
     - [Pré-requisitos](#pré-requisitos)
     - [Instalação](#instalação)
 - [Descrição dos Diretórios](#descrição-dos-diretórios)
-- [](#)
+- [Problemas](#problemas)
 </aside>
 
 # Preparando o ambiente
@@ -86,8 +76,7 @@ ou realizar o comando `docker compose down`
 - **Project:** diretório que contém os arquivos relacionados com todo o Backend
 e Frontend da aplicação;
 
-    - **Insert Data:** diretório que contém os dados para serem inseridos
-automaticamente no DB.
+    - **Insert Data:** diretório que contém os dados para serem inseridos no DB.
 
     - **Models:** diretório que contém as classes estruturadas para o formato de
 banco de dados no SQLAlchemy;
@@ -98,10 +87,16 @@ FastAPI;
     - **Schemas:** diretório que contém os esquemas de dados para validação e
 serialização usando Pydantic.
 
-    - **Static:** contém os arquivos estáticos - podendo ser JavaScript, CSS e
-imagens - que serão enviados para o cliente;
+    - **Static:** contém os arquivos estáticos - JavaScript, CSS e imagens - que
+serão enviados para o cliente;
 
     - **Templates:** contém os templates em HTML que serão renderizados pelo
 FastAPI para criar páginas web;
 
     - **Util:** contém funções que são úteis para outras partes do programa.
+
+## Problemas
+Dentro de um pedido só cabem UM produto, tem que ser 1 ou vários.
+
+Os erros nas funções estão impedindo o cadastramento de todas as classes, porém
+esses erros não ficam visíveis no Front.

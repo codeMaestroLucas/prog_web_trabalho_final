@@ -16,22 +16,22 @@ router = APIRouter(
 )
 
 @dataclass
-class produto_input():
+class product_input():
     name: str  = Form(...)
     price: float = Form(...)
     in_stock: int = Form(...)
 
 @router.post("/create")
-def create_product(product: produto_input = Depends(),
-                   db: Session = Depends(get_db)) -> dict:
+def create_product(product: product_input = Depends(),
+                   db: Session = Depends(get_db)) -> RedirectResponse:
     """Função usada para criar um novo produto.
 
     Args:
-        product (schProduct): Produto que será criado.
+        product (product_input): Produto que será criado.
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Returns:
-        dict: O produto criado.
+        RedirectResponse: Para a página home já atualizada.
     """
     product = schProduct(name= product.name,
                         price= product.price,
@@ -74,22 +74,22 @@ def read_product(product_id: int,
     return return_formatted_data(product_to_get, db)
 
 
-@router.put('/{product_id}')
-def update_product(product_id: int,
-                   product: schProduct,
-                   db: Session = Depends(get_db)) -> dict:
+@router.put('/update')
+def update_product(product_id: int = Form(...),
+                   product: product_input = Depends(),
+                   db: Session = Depends(get_db)) -> RedirectResponse:
     """Função usada para atualizar um produto basedo no ID.
 
     Args:
         product_id (int): ID do produto que será atualizado.
-        product (schProduct): Novos campos de produto que serão usados.
+        product (product_input): Novos campos de produto que serão usados.
         db (Session, optional): Conexão com o DB. Defaults to Depends(get_db).
 
     Raises:
         HTTPException: Caso o novo email já esteja em uso por outro produto.
 
     Returns:
-        dict: Produto atualizado.
+        RedirectResponse: Para a página home já atualizada.
     """
     
     db_query = select(modProduct).where(modProduct.id == product_id)
@@ -97,10 +97,14 @@ def update_product(product_id: int,
     
     check_if_exists('products', product_to_update, db) # Old
     
+    product = schProduct(name= product.name,
+                         price= product.price,
+                         in_stock= product.in_stock)
+    
+    
     new_product = modProduct(name= product.name,
                              price= product.price,
-                             in_stock=  product.in_stock
-                             )
+                             in_stock=  product.in_stock)
     
     check_if_exists('products', new_product, db, invert= True)
     
@@ -113,12 +117,12 @@ def update_product(product_id: int,
     db.execute(stmt)
     db.commit()
 
-    return return_formatted_data(product_to_update, db)
+    return RedirectResponse("/home", status_code=303)
 
 
 @router.delete('/{product_id}')
 def delete_product(product_id: int,
-                db: Session = Depends(get_db)) -> dict:
+                   db: Session = Depends(get_db)) -> dict:
     """Função usada para deletar um produto baseado no ID.
 
     Args:
